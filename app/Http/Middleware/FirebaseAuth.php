@@ -29,7 +29,7 @@ class FirebaseAuth
         $token = $request->bearerToken();
 
         if (!$token) {
-            return response()->json(['status' => 'error','message' => 'Token not provided'], 403);
+            return response()->json(['status' => 'error','message' => 'Token not provided'], Response::HTTP_UNAUTHORIZED);
         }
 
         // Verify the token
@@ -46,7 +46,7 @@ class FirebaseAuth
             'name' => $userPayload->displayName,
             'email' => $userPayload->email,
         ]);
-
+        
         $request->user = $user;
 
         return $next($request);

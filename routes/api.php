@@ -22,6 +22,6 @@ use App\Http\Controllers\v1\FirebaseAuthController;
  * The second check inside the controller
  */
 Route::prefix('/auth')->group(function() {
-    Route::post('/me', [FirebaseAuthController::class, 'me'])->middleware('auth.firebase');
+    Route::get('/me', [FirebaseAuthController::class, 'me'])->middleware('auth.firebase');
     Route::post('/check', [FirebaseAuthController::class, 'checkToken']);
 });

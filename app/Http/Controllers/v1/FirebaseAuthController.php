@@ -28,6 +28,8 @@ class FirebaseAuthController extends Controller
 
     /**
      * Check if a given token is valid. Not valid token exception should be handled by the global exception handler
+     * 
+     * This is a route implementation for the auth.firebase middleware
      */
     public function checkToken(Request $request)
     {

@@ -43,7 +43,7 @@ class FirebaseAuth
         // TODO: Move this into an action or something
         $user = User::firstOrCreate([
             'id' => $userPayload->uid,
-            'name' => $userPayload->displayName,
+            'name' => $userPayload->displayName ?? $userPayload->email,
             'email' => $userPayload->email,
         ]);
         

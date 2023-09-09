@@ -18,10 +18,8 @@ use App\Http\Controllers\v1\FirebaseAuthController;
 
 /**
  * Firebase example route to check if a token is valid.
- * The first one check the token with a middleware
- * The second check inside the controller
+ * All auth related routes should be put under here.
  */
 Route::prefix('/auth')->group(function() {
     Route::get('/me', [FirebaseAuthController::class, 'me'])->middleware('auth.firebase');
-    Route::post('/check', [FirebaseAuthController::class, 'checkToken']);
 });

@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\v1\FirebaseAuthController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+/**
+ * Firebase example route to check if a token is valid.
+ * All auth related routes should be put under here.
+ */
+Route::prefix('/auth')->group(function() {
+    Route::get('/me', [FirebaseAuthController::class, 'me'])->middleware('auth.firebase');
 });

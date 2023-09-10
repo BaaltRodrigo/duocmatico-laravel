@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -25,6 +28,13 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        /**
+         * Firebase error handling
+         */
+        $this->renderable(function (FailedToVerifyToken $e, Request $request) {
+            return response()->json(['status' => 'error','message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
         });
     }
 }

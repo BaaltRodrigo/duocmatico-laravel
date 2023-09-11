@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\v1\AcademicChargeController;
 use App\Http\Controllers\v1\FirebaseAuthController;
 
 /*
@@ -22,4 +23,16 @@ use App\Http\Controllers\v1\FirebaseAuthController;
  */
 Route::prefix('/auth')->group(function() {
     Route::get('/me', [FirebaseAuthController::class, 'me'])->middleware('auth.firebase');
+});
+
+
+/**
+ * Academic charges routes.
+ */
+Route::prefix('/academic-charges')->group(function () {
+    Route::get('/', [AcademicChargeController::class, 'index'])->name('academic-charges.index');
+    Route::post('/', [AcademicChargeController::class, 'store'])->name('academic-charges.store');
+    Route::get('/{charge}', [AcademicChargeController::class, 'show'])->name('academic-charges.show');
+    Route::match(['put', 'patch'], '/{charge}', [AcademicChargeController::class, 'update'])
+        ->name('academic-charges.update');
 });

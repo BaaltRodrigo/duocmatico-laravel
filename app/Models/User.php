@@ -6,29 +6,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Change the default ward to web to use roles
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'id', // comes from Firebase
         'name',
         'email',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
     // Tells the database not to auto-increment this field
@@ -42,6 +32,4 @@ class User extends Authenticatable
     {
         return 'string';
     }
-
-
 }

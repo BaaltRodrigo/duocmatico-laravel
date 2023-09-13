@@ -7,10 +7,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Traits\UseFirebaseUser;
 
 class FirebaseAuthTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, UseFirebaseUser;
 
     public function test_it_fails_without_token(): void
     {
@@ -21,10 +22,19 @@ class FirebaseAuthTest extends TestCase
 
     public function test_it_pass_with_a_valid_user(): void
     {
-        $this->actingAsFirebaseUser('duocmatico-admin@example.net', 'securePassword');
+        $this->actingAsFirebaseUser();
 
         $response = $this->getJson('/api/auth/me');
 
-        $response->assertStatus(Response::HTTP_OK);
+        // assert successful response or created
+        $response->assertSuccessful();
+        $response->assertJsonStructure([
+            'user' => [
+                'id',
+                'email',
+                'name',
+                'roles',
+            ],
+        ]);
     }
 }

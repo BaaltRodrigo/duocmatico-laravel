@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Kreait\Laravel\Firebase\Facades\Firebase;
+use Firebase\Auth\Token\Exception\IssuedInTheFuture;
 
 class FirebaseAuth
 {
@@ -33,21 +34,33 @@ class FirebaseAuth
         }
 
         // Verify the token
-        $verifiedIdToken = $this->auth->verifyIdToken($token, $checkIfRevoked = true);
+        $verifiedIdToken = $this->auth->verifyIdToken(
+            $token,
+            $checkIfRevoked = true,
+            $leewayInSeconds = 3600 // Handle 1 hour of delay from the client
+        );
         
         // Set the user in the request and proceed
         $uid = $verifiedIdToken->claims()->get('sub');
         $userPayload = $this->auth->getUser($uid);
         
         // Check if the user exists on the tables
-        // TODO: Move this into an action or something
-        $user = User::firstOrCreate([
-            'id' => $userPayload->uid,
-            'name' => $userPayload->displayName ?? $userPayload->email,
-            'email' => $userPayload->email,
-        ]);
-        
-        $request->user = $user;
+        $user = User::find($userPayload->uid);
+
+        if (!$user) {
+            // No user, create one
+            // TODO: Move this into an action or something
+            $user = User::create([
+                'id' => $userPayload->uid,
+                'name' => $userPayload->displayName ?? $userPayload->email,
+                'email' => $userPayload->email,
+            ]);
+            $user->assignRole('common'); // default role for every user
+        }
+
+        // At this point, we get an old user or the new one
+        // sign the user in
+        auth()->login($user);     
 
         return $next($request);
     }

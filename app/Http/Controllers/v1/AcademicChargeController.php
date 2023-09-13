@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\AcademicChargeCollection;
 use App\Http\Resources\AcademicChargeResource;
+use App\Http\Requests\StoreAcademicChargeRequest as StoreRequest;
+use App\Http\Requests\UpdateAcademicChargeRequest as UpdateRequest;
+
 
 class AcademicChargeController extends Controller
 {
@@ -31,36 +34,30 @@ class AcademicChargeController extends Controller
         return new AcademicChargeResource($charge);
     }
 
-    public function store(Request $request): AcademicChargeResource
+    public function store(StoreRequest $request): AcademicChargeResource
     {
-        $academicCharge = AcademicCharge::create([
-            'name' => $request->name,
-            'year' => $request->year,
-            'semester' => $request->semester,
-            'is_hidden' => $request->is_hidden,
-        ]);
+        $validated = $request->validated();
+        $academicCharge = AcademicCharge::create($validated);
 
         return new AcademicChargeResource($academicCharge);
     }
 
-    public function update(Request $request, AcademicCharge $charge): AcademicChargeResource
+    public function update(UpdateRequest $request, AcademicCharge $charge): AcademicChargeResource
     {
-        $charge->update([
-            'name' => $request->name,
-            'year' => $request->year,
-            'semester' => $request->semester,
-            'is_hidden' => $request->is_hidden,
-        ]);
+        $validated = $request->validated();
+        $charge->update($validated);
 
         return new AcademicChargeResource($charge);
     }
 
-    public function destroy(AcademicCharge $charge): Response
+    public function destroy(AcademicCharge $charge)
     {
+        $this->authorize('delete', $charge);
+        
         $charge->delete();
 
         return response()->json([
             'message' => 'Academic charge deleted successfully',
-        ], Response::HTTP_OK);
+        ], 204); // What is no content in Response object?
     }
 }

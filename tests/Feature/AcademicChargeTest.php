@@ -6,10 +6,12 @@ use App\Models\AcademicCharge;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Traits\UseRolesTable;
+use Tests\Traits\UseFirebaseUser;
 
 class AcademicChargeTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, UseRolesTable, UseFirebaseUser;
 
     public function test_index_route_is_public(): void
     {
@@ -40,11 +42,85 @@ class AcademicChargeTest extends TestCase
         $response->assertJsonFragment(['id' => $availableCharge->id]);
     }
 
-    // TODO: Test that require roles and permissions will be added here
-    // Test to add when roles are implemented
-    // - Only admin can create a charge
-    // - Only admin can update a charge
-    // - Only admin can delete a charge
-    // - Only admin can make a charge hidden
-    // - Only admin can make a charge visible
+    public function test_it_allows_admin_to_create_academic_charges(): void
+    {
+        $academicCharge = AcademicCharge::factory()->make();
+        $user = $this->createUserWithRoles(['duoc']);
+        $this->actingAsFirebaseUser();
+
+        $response = $this->postJson(route('academic-charges.store'), $academicCharge->toArray());
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('academic_charges', $academicCharge->toArray());
+    }
+
+    public function test_it_allows_admin_to_update_academic_charges(): void
+    {
+        $academicCharge = AcademicCharge::factory()->create();
+        $user = $this->createUserWithRoles(['duoc']);
+        $this->actingAsFirebaseUser();
+        
+        $response = $this->putJson(route('academic-charges.update', $academicCharge), [
+            'name' => 'New name',
+            'is_hidden' => true,
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('academic_charges', [
+            'id' => $academicCharge->id,
+            'name' => 'New name',
+            'is_hidden' => true,
+        ]);
+    }
+
+    public function test_it_allows_admin_to_delete_academic_charges(): void
+    {
+        $academicCharge = AcademicCharge::factory()->create();
+        $user = $this->createUserWithRoles(['duoc']);
+        $this->actingAsFirebaseUser();
+
+        $response = $this->deleteJson(route('academic-charges.destroy', $academicCharge));
+
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('academic_charges', [
+            'id' => $academicCharge->id,
+        ]);
+    }
+
+    public function test_it_denies_common_users_to_create_academic_charges(): void
+    {
+        $academicCharge = AcademicCharge::factory()->make();
+        $user = $this->createUserWithRoles(['common']);
+        $this->actingAsFirebaseUser();
+
+        $response = $this->postJson(route('academic-charges.store'), $academicCharge->toArray());
+
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('academic_charges', $academicCharge->toArray());
+    }
+
+    public function test_it_denies_common_users_to_update_academic_charges(): void
+    {
+        $academicCharge = AcademicCharge::factory()->create();
+        $user = $this->createUserWithRoles(['common']);
+        $this->actingAsFirebaseUser();
+
+        $response = $this->putJson(route('academic-charges.update', $academicCharge), [
+            'name' => 'New name',
+            'is_hidden' => true,
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_it_denies_common_users_to_delete_academic_charges(): void
+    {
+        $academicCharge = AcademicCharge::factory()->create();
+        $user = $this->createUserWithRoles(['common']);
+        $this->actingAsFirebaseUser();
+
+        $response = $this->deleteJson(route('academic-charges.destroy', $academicCharge));
+
+        $response->assertStatus(403);
+    }
 }

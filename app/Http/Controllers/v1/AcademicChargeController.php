@@ -36,12 +36,8 @@ class AcademicChargeController extends Controller
 
     public function store(StoreRequest $request): AcademicChargeResource
     {
-        $academicCharge = AcademicCharge::create([
-            'name' => $request->name,
-            'year' => $request->year,
-            'semester' => $request->semester,
-            'is_hidden' => $request->is_hidden,
-        ]);
+        $validated = $request->validated();
+        $academicCharge = AcademicCharge::create($validated);
 
         return new AcademicChargeResource($academicCharge);
     }
@@ -54,12 +50,14 @@ class AcademicChargeController extends Controller
         return new AcademicChargeResource($charge);
     }
 
-    public function destroy(AcademicCharge $charge): Response
+    public function destroy(AcademicCharge $charge)
     {
+        $this->authorize('delete', $charge);
+        
         $charge->delete();
 
         return response()->json([
             'message' => 'Academic charge deleted successfully',
-        ], Response::HTTP_OK);
+        ], 204); // What is no content in Response object?
     }
 }

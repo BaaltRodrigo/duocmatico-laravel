@@ -55,6 +55,7 @@ class FirebaseAuth
                 'name' => $userPayload->displayName ?? $userPayload->email,
                 'email' => $userPayload->email,
             ]);
+            $user->assignRole('common'); // default role for every user
         }
 
         // At this point, we get an old user or the new one

@@ -30,7 +30,7 @@ trait UseFirebaseUser
             'email' => $this->user_email
         ]);
 
-        $user->assignRole($roles);
+        $user->syncRoles($roles);
 
         return $user;
     }

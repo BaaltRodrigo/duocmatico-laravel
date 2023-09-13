@@ -8,10 +8,11 @@ use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\UseFirebaseUser;
+use Tests\Traits\UseRolesTable;
 
 class FirebaseAuthTest extends TestCase
 {
-    use RefreshDatabase, UseFirebaseUser;
+    use RefreshDatabase, UseFirebaseUser, UseRolesTable;
 
     public function test_it_fails_without_token(): void
     {

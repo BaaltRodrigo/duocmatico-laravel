@@ -33,14 +33,12 @@ class FirebaseAuth
             return response()->json(['status' => 'error','message' => 'Token not provided'], Response::HTTP_UNAUTHORIZED);
         }
 
-        try {
-            // Verify the token
-            $verifiedIdToken = $this->auth->verifyIdToken($token, $checkIfRevoked = true);
-        } catch (IssuedInTheFuture $e) {
-            // This solves the issue for now, but we should check the time
-            // on the server and the time on the token
-            $verifiedIdToken = $e->getToken();
-        }
+        // Verify the token
+        $verifiedIdToken = $this->auth->verifyIdToken(
+            $token,
+            $checkIfRevoked = true,
+            $leewayInSeconds = 3600 // Handle 1 hour of delay from the client
+        );
         
         // Set the user in the request and proceed
         $uid = $verifiedIdToken->claims()->get('sub');

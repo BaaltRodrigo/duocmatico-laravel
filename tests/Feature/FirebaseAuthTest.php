@@ -26,6 +26,15 @@ class FirebaseAuthTest extends TestCase
 
         $response = $this->getJson('/api/auth/me');
 
-        $response->assertStatus(Response::HTTP_OK);
+        // assert successful response or created
+        $response->assertSuccessful();
+        $response->assertJsonStructure([
+            'user' => [
+                'id',
+                'email',
+                'name',
+                'roles',
+            ],
+        ]);
     }
 }

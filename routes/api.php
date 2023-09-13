@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+// Controllers
 use App\Http\Controllers\v1\AcademicChargeController;
 use App\Http\Controllers\v1\FirebaseAuthController;
 
@@ -22,7 +22,9 @@ use App\Http\Controllers\v1\FirebaseAuthController;
  * All auth related routes should be put under here.
  */
 Route::prefix('/auth')->group(function() {
-    Route::get('/me', [FirebaseAuthController::class, 'me'])->middleware('auth.firebase');
+    Route::get('/me', [FirebaseAuthController::class, 'me'])
+        ->middleware('auth.firebase')
+        ->name('auth.current-user');
 });
 
 

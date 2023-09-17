@@ -5,24 +5,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subject extends Model
 {
     use HasFactory;
 
     public $fillable = [
-        'name',
-        'career_id',
         'code', // Abbreviation like ASY5512
+        'name',
         'level',
-        'school', // This could be moved to a separate table... or deleted
+        'career_id',
+        'school_id', // This could be moved to a separate table... or deleted
     ];
 
-    // TODO: Belongs to a career
     public function career(): BelongsTo
     {
         return $this->belongsTo(Career::class);
     }
 
-    // TODO: Has many sections
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
+    }    
+
+    public function sections(): HasMany
+    {
+        return $this->hasMany(Section::class);
+    }
 }

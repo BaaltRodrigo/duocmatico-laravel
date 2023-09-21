@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 // Controllers
 use App\Http\Controllers\v1\AcademicChargeController;
 use App\Http\Controllers\v1\FirebaseAuthController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,3 +38,11 @@ Route::apiResource('academic-charges', AcademicChargeController::class)
     ->only('store', 'update', 'destroy')
     ->middleware('auth.firebase')
     ->parameters(['academic-charges' => 'charge']);
+
+// Nested routes for academic charges.
+
+Route::get('/academic-charges/{charge}/careers', [AcademicChargeController::class, 'careers'])
+    ->name('academic-charges.careers.index');
+
+Route::get('/academic-charges/{charge}/schools', [AcademicChargeController::class, 'schools'])
+    ->name('academic-charges.schools.index');

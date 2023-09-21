@@ -11,6 +11,8 @@ class Subject extends Model
 {
     use HasFactory;
 
+    protected $with = ['career', 'school'];
+
     public $fillable = [
         'code', // Abbreviation like ASY5512
         'name',

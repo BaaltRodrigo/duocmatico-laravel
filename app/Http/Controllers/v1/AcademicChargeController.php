@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Models\AcademicCharge;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Http\Resources\AcademicChargeCollection;
-use App\Http\Resources\AcademicChargeResource;
 use App\Http\Requests\StoreAcademicChargeRequest as StoreRequest;
 use App\Http\Requests\UpdateAcademicChargeRequest as UpdateRequest;
-
+use App\Http\Resources\AcademicChargeResource;
+use App\Http\Resources\Collections\AcademicChargeCollection;
+use App\Http\Resources\Collections\CareerCollection;
+use App\Http\Resources\Collections\SchoolCollection;
+use App\Models\AcademicCharge;
+use Illuminate\Http\Request;
 
 class AcademicChargeController extends Controller
 {
@@ -31,6 +31,9 @@ class AcademicChargeController extends Controller
 
     public function show(AcademicCharge $charge): AcademicChargeResource
     {
+        // Load to avoid N+1 problem and improve performance
+        // By default, subjects come with career and school
+        $charge->load('subjects');
         return new AcademicChargeResource($charge);
     }
 
@@ -59,5 +62,17 @@ class AcademicChargeController extends Controller
         return response()->json([
             'message' => 'Academic charge deleted successfully',
         ], 204); // What is no content in Response object?
+    }
+
+    public function careers(AcademicCharge $charge): CareerCollection
+    {
+        $charge->load('subjects');
+        return new CareerCollection($charge->subjects->pluck('career')->unique());
+    }
+
+    public function schools(AcademicCharge $charge): SchoolCollection
+    {
+        $charge->load('subjects');
+        return new SchoolCollection($charge->subjects->pluck('school')->unique());
     }
 }

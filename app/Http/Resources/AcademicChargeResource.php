@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Collections\CareerCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,12 @@ class AcademicChargeResource extends JsonResource
             'name' => $this->name,
             'year' => $this->year,
             'semester' => $this->semester,
-            'full_name' => "{$this->name} {$this->year}-{$this->semester}"
+            'is_hidden' => $this->is_hidden,
+            'full_name' => "{$this->name} {$this->year}-{$this->semester}",
+            // relationships
+            'careers' => CareerCollection::make(
+                $this->subjects->pluck('career')->unique()
+            ),
         ];
     }
 }

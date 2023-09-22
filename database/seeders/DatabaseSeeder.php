@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RolesAndPermissionSeeder::class,
-            AcademicChargeSeeder::class,
+            CsvDataSeeder::class
         ]);
     }
 }

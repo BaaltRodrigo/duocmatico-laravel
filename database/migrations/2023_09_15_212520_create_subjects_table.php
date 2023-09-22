@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('career_id')->constrained();
             $table->foreignId('school_id')->constrained();
             $table->string('code'); // Abbreviation like ASY5512
-            $table->string('level'); // There are levels called 'Optativo'
+            $table->integer('level')->default(0); // There are levels called 'Optativo' or 'Optativos' to cast to 0
             $table->timestamps();
         });
     }

@@ -10,6 +10,7 @@ use App\Models\Schedule;
 use App\Models\Subject;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CsvDataSeeder extends Seeder
 {
@@ -31,7 +32,7 @@ class CsvDataSeeder extends Seeder
             $csvData = array_map('str_getcsv', file($seed['path']));
 
             $headers = array_shift($csvData);
-            $headers[0] = 'id';
+            $headers[0] = 'id';  
 
             // make a collection of combined array between csv lines and headers
             $data = collect($csvData)->map(function ($line) use ($headers) {
@@ -43,5 +44,21 @@ class CsvDataSeeder extends Seeder
                 $seed['model']::insert($chunk->toArray());
             });
         }
+
+        // Many to many relationships needs to be seeded manually
+        $shceduleSectionPath = base_path('database/csv/schedule_section.csv');
+        $scheduleSectionCsvData = array_map('str_getcsv', file($shceduleSectionPath));
+        $scheduleSectionHeaders = array_shift($scheduleSectionCsvData);
+        $scheduleSectionHeaders[0] = 'schedule_id';
+
+        $this->command->info('seeding many to many');
+
+        // raw insert the data into the pivot table
+        DB::table('schedule_section')->insert(
+            collect($scheduleSectionCsvData)->map(function ($line) use ($scheduleSectionHeaders) {
+                return array_combine($scheduleSectionHeaders, $line);
+            })->toArray()
+        );
+
     }
 }

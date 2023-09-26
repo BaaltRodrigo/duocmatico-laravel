@@ -20,7 +20,7 @@ class CsvDataSeeder extends Seeder
     public function run(): void
     {
         $filesModels = [
-            ['path' => base_path('database/csv/academic-charges.csv'), 'model' => AcademicCharge::class],
+            ['path' => base_path('database/csv/academic_charges.csv'), 'model' => AcademicCharge::class],
             ['path' => base_path('database/csv/careers.csv'), 'model' => Career::class],
             ['path' => base_path('database/csv/schools.csv'), 'model' => School::class],
             ['path' => base_path('database/csv/subjects.csv'), 'model' => Subject::class],

@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('career_id')->constrained();
-            $table->foreignId('school_id')->constrained();
             $table->string('code'); // Abbreviation like ASY5512
             $table->integer('level')->default(0); // There are levels called 'Optativo' or 'Optativos' to cast to 0
             $table->timestamps();

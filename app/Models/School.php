@@ -13,8 +13,8 @@ class School extends Model
         'name',
     ];
 
-    public function subjects()
+    public function sections()
     {
-        return $this->hasMany(Subject::class);
+        return $this->hasMany(Section::class);
     }
 }

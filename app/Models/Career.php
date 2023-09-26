@@ -14,9 +14,8 @@ class Career extends Model
         'name',
     ];
 
-    //TODO: Has many subjects
-    public function subjects(): HasMany
+    public function sections(): HasMany
     {
-        return $this->hasMany(Subject::class);
+        return $this->hasMany(Section::class);
     }
 }

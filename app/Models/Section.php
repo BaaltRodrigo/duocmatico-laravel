@@ -13,6 +13,8 @@ class Section extends Model
 
     protected $table = 'academic_charge_subject';
 
+    protected $with = ['subject'];
+
     // The attributes that are mass assignable.
     protected $fillable = [
         'academic_charge_id',
@@ -30,6 +32,16 @@ class Section extends Model
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
+    }
+
+    public function career(): BelongsTo
+    {
+        return $this->belongsTo(Career::class);
+    }
+
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
     }
 
     public function schedules(): BelongsToMany

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('academic_charge_id')->constrained();
             $table->foreignId('subject_id')->constrained();
+            $table->foreignId('career_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('school_id')->nullable()->constrained()->onDelete('set null');
             $table->string('code'); // Like ASY5512-004D
             $table->string('teacher');
             $table->string('shift');

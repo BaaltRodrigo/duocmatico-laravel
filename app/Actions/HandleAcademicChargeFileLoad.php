@@ -22,7 +22,7 @@ class HandleAcademicChargeFileLoad
             'subjects' => 0,
             'sections' => 0,
             'schedules' => 0,
-            'duplicates' => 0
+            'duplicate schedules' => 0,
         ];
 
         // map the headers to line numbers
@@ -49,11 +49,9 @@ class HandleAcademicChargeFileLoad
             $level = (int) $line[$headers['Nivel']];
             // Create or get the Subject from the career
             $subject = Subject::firstOrCreate([
-                'career_id' => $career->id,
                 'name' => Str::slug($line[$headers['Asignatura']]),
                 'code' => Str::slug($line[$headers['Sigla']]),
                 'level' => $level,
-                'school_id' => $school->id,
             ]);
 
             if ($subject->wasRecentlyCreated) $counters['subjects']++;
@@ -65,6 +63,8 @@ class HandleAcademicChargeFileLoad
                 'code' => $line[$headers['Sección']],
                 'shift' => Str::slug($line[$headers['Jornada']]),
                 'teacher' => Str::slug($line[$headers['Docente']]),
+                'career_id' => $career->id,
+                'school_id' => $school->id,
             ]);
 
             if ($section->wasRecentlyCreated) $counters['sections']++;
@@ -82,7 +82,7 @@ class HandleAcademicChargeFileLoad
             try {
                 $section->schedules()->attach($schedule->id);
             } catch (\Illuminate\Database\UniqueConstraintViolationException $th) {
-                $counters['duplicates']++;
+                $counters['duplicate schedules']++;
             }
         }
 
@@ -92,7 +92,7 @@ class HandleAcademicChargeFileLoad
         info('Subjects created: ' . $counters['subjects']);
         info('Sections created: ' . $counters['sections']);
         info('Schedules created: ' . $counters['schedules']);
-        info('Duplicates schedules: ' . $counters['duplicates']);
+        info('Duplicates schedules: ' . $counters['duplicate schedules']);
 
         return $charge;
     }

@@ -74,7 +74,7 @@ class AcademicChargeController extends Controller
         return new CareerCollection($charge->sections->pluck('career')->unique());
     }
 
-    public function subjects(ListSectionRequest $request, AcademicCharge $charge)
+    public function sections(ListSectionRequest $request, AcademicCharge $charge)
     {
         // General filtering using resource id and their type
         $validated = $request->validated();

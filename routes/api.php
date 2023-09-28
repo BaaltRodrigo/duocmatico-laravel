@@ -50,7 +50,7 @@ Route::apiResource('academic-charges', AcademicChargeController::class)
     ->parameters(['academic-charges' => 'charge']);
 
 Route::prefix('/academic-charges/{charge}')->group(function () {
-    Route::get('/subjects', [AcademicChargeController::class, 'subjects'])->name('academic-charges.sections');
+    Route::get('/sections', [AcademicChargeController::class, 'sections'])->name('academic-charges.sections');
     Route::get('/careers', [AcademicChargeController::class, 'careers'])->name('academic-charges.careers');
     Route::get('/schools', [AcademicChargeController::class, 'schools'])->name('academic-charges.schools');
 });

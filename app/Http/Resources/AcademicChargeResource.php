@@ -26,14 +26,14 @@ class AcademicChargeResource extends JsonResource
             // relationships when loaded
             'careers' => CareerCollection::make(
                 $this->when(
-                    $this->relationLoaded('subjects'),
-                    $this->subjects->pluck('career')->unique() // Career is always eager loaded on subjects
+                    $this->relationLoaded('sections'),
+                    $this->sections->pluck('career')->unique() // Career is always eager loaded on subjects
                 )
             ),
             'schools' => SchoolCollection::make(
                 $this->when(
-                    $this->relationLoaded('subjects'),
-                    $this->subjects->pluck('school')->unique() // School is always eager loaded on subjects
+                    $this->relationLoaded('sections'),
+                    $this->sections->pluck('school')->unique() // School is always eager loaded on subjects
                 )
             ),
         ];

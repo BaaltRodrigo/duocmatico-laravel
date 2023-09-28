@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ListSectionRequest;
 use App\Http\Requests\StoreAcademicChargeRequest as StoreRequest;
 use App\Http\Requests\UpdateAcademicChargeRequest as UpdateRequest;
 use App\Http\Resources\AcademicChargeResource;
@@ -10,6 +11,7 @@ use App\Http\Resources\Collections\AcademicChargeCollection;
 use App\Http\Resources\Collections\CareerCollection;
 use App\Http\Resources\Collections\SchoolCollection;
 use App\Models\AcademicCharge;
+use App\Models\Career;
 use Illuminate\Http\Request;
 
 class AcademicChargeController extends Controller
@@ -32,8 +34,9 @@ class AcademicChargeController extends Controller
     public function show(AcademicCharge $charge): AcademicChargeResource
     {
         // Load to avoid N+1 problem and improve performance
-        // By default, subjects come with career and school
-        $charge->load('subjects');
+        // By default, sections come with career and school
+        $charge->load('sections');
+
         return new AcademicChargeResource($charge);
     }
 
@@ -56,7 +59,7 @@ class AcademicChargeController extends Controller
     public function destroy(AcademicCharge $charge)
     {
         $this->authorize('delete', $charge);
-        
+
         $charge->delete();
 
         return response()->json([
@@ -66,13 +69,28 @@ class AcademicChargeController extends Controller
 
     public function careers(AcademicCharge $charge): CareerCollection
     {
-        $charge->load('subjects');
-        return new CareerCollection($charge->subjects->pluck('career')->unique());
+        $charge->load('sections');
+
+        return new CareerCollection($charge->sections->pluck('career')->unique());
+    }
+
+    public function subjects(ListSectionRequest $request, AcademicCharge $charge)
+    {
+        // General filtering using resource id and their type
+        $validated = $request->validated();
+
+        $sections = $charge->sections()
+            ->where($validated['resource_type'].'_id', $validated['resource_id'])
+            ->get();
+
+        return $sections;
+
     }
 
     public function schools(AcademicCharge $charge): SchoolCollection
     {
-        $charge->load('subjects');
-        return new SchoolCollection($charge->subjects->pluck('school')->unique());
+        $charge->load('sections');
+
+        return new SchoolCollection($charge->sections->pluck('school')->unique());
     }
 }

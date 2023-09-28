@@ -4,24 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AcademicCharge extends Model
+class Subject extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'year',
-        'semester',
-        'is_hidden',
-    ];
+    // protected $with = ['career', 'school'];
 
-    public function subjects(): BelongsToMany
-    {
-        return $this->belongsToMany(Subject::class);
-    }
+    public $fillable = [
+        'code', // Abbreviation like ASY5512
+        'name',
+        'level',
+    ];
 
     public function sections(): HasMany
     {

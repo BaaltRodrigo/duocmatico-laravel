@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Collections;
 
+use App\Http\Resources\Identifiers\AcademicChargeIdentifier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class AcademicChargeCollection extends ResourceCollection
 {
-    // Changed the default wrap
     public static $wrap = 'charges';
 
     /**
@@ -15,9 +15,8 @@ class AcademicChargeCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request): ResourceCollection
     {
-        return AcademicChargeResource::collection($this->collection)
-            ->toArray($request);
+        return AcademicChargeIdentifier::collection($this->collection);
     }
 }

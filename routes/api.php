@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 // Controllers
 use App\Http\Controllers\v1\AcademicChargeController;
 use App\Http\Controllers\v1\FirebaseAuthController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,16 +20,26 @@ use App\Http\Controllers\v1\FirebaseAuthController;
  * Firebase example route to check if a token is valid.
  * All auth related routes should be put under here.
  */
-Route::prefix('/auth')->group(function() {
+Route::prefix('/auth')->group(function () {
     Route::get('/me', [FirebaseAuthController::class, 'me'])
         ->middleware('auth.firebase')
         ->name('auth.current-user');
 });
 
-
-/**
- * Academic charges routes.
- */
+/*
+|--------------------------------------------------------------------------
+| Academic charge Routes
+|--------------------------------------------------------------------------
+|
+| Some routes for academic charges are protected by the auth.firebase
+| middleware in combination of roles. This is because the we don't
+| allow every user to upload a file with a whole charge request
+|
+| There are also nested routes for a charge. This is because we
+| want to give more options to the front-end in the way they
+| want to get the data. Sections can also be fetched from
+| the their respective routes using some query params.
+*/
 
 Route::apiResource('academic-charges', AcademicChargeController::class)
     ->only('index', 'show')
@@ -39,3 +48,9 @@ Route::apiResource('academic-charges', AcademicChargeController::class)
     ->only('store', 'update', 'destroy')
     ->middleware('auth.firebase')
     ->parameters(['academic-charges' => 'charge']);
+
+Route::prefix('/academic-charges/{charge}')->group(function () {
+    Route::get('/sections', [AcademicChargeController::class, 'sections'])->name('academic-charges.sections');
+    Route::get('/careers', [AcademicChargeController::class, 'careers'])->name('academic-charges.careers');
+    Route::get('/schools', [AcademicChargeController::class, 'schools'])->name('academic-charges.schools');
+});

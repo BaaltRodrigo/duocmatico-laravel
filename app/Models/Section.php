@@ -13,7 +13,7 @@ class Section extends Model
 
     protected $table = 'academic_charge_subject';
 
-    protected $with = ['subject'];
+    protected $with = ['subject', 'schedules'];
 
     // The attributes that are mass assignable.
     protected $fillable = [
@@ -47,5 +47,15 @@ class Section extends Model
     public function schedules(): BelongsToMany
     {
         return $this->belongsToMany(Schedule::class);
+    }
+
+    public function scopeFromAcademicCharge($query, $academicChargeId)
+    {
+        return $query->where('academic_charge_id', $academicChargeId);
+    }
+
+    public function scopeCareerOrSchool($query, $resource_type, $resource_id)
+    {
+        return $query->where($resource_type.'_id', $resource_id);
     }
 }

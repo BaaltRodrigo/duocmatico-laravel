@@ -26,6 +26,11 @@ class Calendar extends Model
         'calendarable_type',
     ];
 
+    public function academicCharge(): BelongsTo
+    {
+        return $this->belongsTo(AcademicCharge::class, 'academic_charge_id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

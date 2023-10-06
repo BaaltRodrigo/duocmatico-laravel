@@ -19,6 +19,8 @@ class Section extends Model
     protected $fillable = [
         'academic_charge_id',
         'subject_id',
+        'career_id',
+        'school_id',
         'code',
         'shift',
         'teacher',

@@ -6,6 +6,8 @@ use App\Models\AcademicCharge;
 use App\Models\Calendar;
 use App\Models\Career;
 use App\Models\School;
+use App\Models\Section;
+use App\Models\Subject;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -126,6 +128,51 @@ class CalendarTest extends TestCase
         $response->assertStatus(204);
         $this->assertDatabaseMissing('calendars', [
             'id' => $calendar->id
+        ]);
+    }
+
+    public function test_it_allows_owners_to_add_sections_to_calendar(): void
+    {
+        $user = $this->createUser();
+        $section = Section::factory()->create();
+        $calendar = Calendar::factory()->create([
+            'user_id' => $user->id,
+            'academic_charge_id' => $section->academic_charge_id,
+            'calendarable_type' => get_class($section->career),
+            'calendarable_id' => $section->career->id
+        ]);
+        $this->actingAsFirebaseUser();
+
+        $response = $this->postJson(route('calendars.sections.store', $calendar->id), [
+            'section_id' => $section->id
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('calendar_section', [
+            'calendar_id' => $calendar->id,
+            'section_id' => $section->id
+        ]);
+    }
+
+    public function test_it_allows_owners_to_delete_calendar_section(): void
+    {
+        $user = $this->createUser();
+        $section = Section::factory()->create();
+        $calendar = Calendar::factory()->create([
+            'user_id' => $user->id,
+            'academic_charge_id' => $section->academic_charge_id,
+            'calendarable_type' => get_class($section->career),
+            'calendarable_id' => $section->career->id
+        ]);
+        $calendar->sections()->attach($section);
+        $this->actingAsFirebaseUser();
+
+        $response = $this->deleteJson(route('calendars.sections.destroy', [$calendar->id, $section->id]));
+
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('calendar_section', [
+            'calendar_id' => $calendar->id,
+            'section_id' => $section->id
         ]);
     }
 }

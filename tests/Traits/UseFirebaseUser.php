@@ -22,17 +22,24 @@ trait UseFirebaseUser
      * Creates the default test user from firebase auth, but
      * changes the roles to the ones provided in the array.
      */
-    public function createUserWithRoles(Array $roles): User
+    public function createUserWithRoles(Array $roles = null): User
     {
-        $user = User::factory()->create([
+        $user = $this->createUser();
+
+        if ($roles) {
+            $user->syncRoles($roles);
+        }
+
+        return $user;
+    }
+
+    public function createUser(): User
+    {
+        return User::factory()->create([
             'id' => $this->user_id,
             'name' => $this->user_name,  
             'email' => $this->user_email
         ]);
-
-        $user->syncRoles($roles);
-
-        return $user;
     }
     
     /**

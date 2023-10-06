@@ -46,8 +46,8 @@ class CsvDataSeeder extends Seeder
         }
 
         // Many to many relationships needs to be seeded manually
-        $shceduleSectionPath = base_path('database/csv/schedule_section.csv');
-        $scheduleSectionCsvData = array_map('str_getcsv', file($shceduleSectionPath));
+        $scheduleSectionPath = base_path('database/csv/schedule_section.csv');
+        $scheduleSectionCsvData = array_map('str_getcsv', file($scheduleSectionPath));
         $scheduleSectionHeaders = array_shift($scheduleSectionCsvData);
         $scheduleSectionHeaders[0] = 'schedule_id';
 

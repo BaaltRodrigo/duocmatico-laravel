@@ -18,4 +18,9 @@ class Career extends Model
     {
         return $this->hasMany(Section::class);
     }
+
+    public function calendars(): HasMany
+    {
+        return $this->hasMany(Calendar::class, 'calendarable_id');
+    }
 }

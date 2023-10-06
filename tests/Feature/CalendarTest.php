@@ -106,7 +106,7 @@ class CalendarTest extends TestCase
         ];
         $this->actingAsFirebaseUser();
 
-        $response = $this->putJson(route('calendars.update', $calendar->id), $data);
+        $response = $this->putJson(route('calendars.update', $calendar->uuid), $data);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('calendars', [
@@ -123,7 +123,7 @@ class CalendarTest extends TestCase
         ]);
         $this->actingAsFirebaseUser();
 
-        $response = $this->deleteJson(route('calendars.destroy', $calendar->id));
+        $response = $this->deleteJson(route('calendars.destroy', $calendar->uuid));
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing('calendars', [
@@ -143,7 +143,7 @@ class CalendarTest extends TestCase
         ]);
         $this->actingAsFirebaseUser();
 
-        $response = $this->postJson(route('calendars.sections.store', $calendar->id), [
+        $response = $this->postJson(route('calendars.sections.store', $calendar->uuid), [
             'section_id' => $section->id
         ]);
 
@@ -167,7 +167,7 @@ class CalendarTest extends TestCase
         $calendar->sections()->attach($section);
         $this->actingAsFirebaseUser();
 
-        $response = $this->deleteJson(route('calendars.sections.destroy', [$calendar->id, $section->id]));
+        $response = $this->deleteJson(route('calendars.sections.destroy', [$calendar->uuid, $section->id]));
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing('calendar_section', [

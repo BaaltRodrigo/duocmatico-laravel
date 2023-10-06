@@ -15,9 +15,9 @@ class CareerIdentifier extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'    => $this->id,
-            'name'  => $this->name,
-            'url'   => 'Not implemented yet'
+            'id' => $this->id,
+            'name' => str_replace('-', ' ', $this->name),
+            'url' => 'Not implemented yet'
         ];
     }
 }

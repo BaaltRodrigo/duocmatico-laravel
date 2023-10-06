@@ -37,9 +37,9 @@ class CalendarController extends Controller
         return $calendar;
     }
 
-    public function delete(Calendar $calendar)
+    public function destroy(Calendar $calendar)
     {
         $calendar->delete();
-        return response()->json(['message' => 'Calendar deleted']);
+        return response()->json(['message' => 'Calendar deleted'], 204);
     }
 }

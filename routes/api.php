@@ -64,4 +64,4 @@ Route::apiResource('calendars', CalendarController::class)
 
 // Show for calendars needs to be outside middleware because there
 // are public calendars that don't need to be authenticated
-Route::get('/calendars/{calendar}', [CalendarController::class])->name('calendars.show');
+Route::get('/calendars/{calendar}', [CalendarController::class, 'show'])->name('calendars.show');

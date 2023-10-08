@@ -18,11 +18,11 @@ class AcademicChargeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => str_replace('-', ' ', $this->name),
             'year' => $this->year,
             'semester' => $this->semester,
             'is_hidden' => $this->is_hidden,
-            'full_name' => "{$this->name} {$this->year}-{$this->semester}",
+            'season' => "{$this->year}-{$this->semester}",
             // relationships when loaded
             'careers' => CareerCollection::make(
                 $this->when(

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class StoreCalendarRequest extends FormRequest
 {
@@ -28,17 +29,24 @@ class StoreCalendarRequest extends FormRequest
             'is_public' => ['sometimes', 'boolean'],
             'options' => ['sometimes', 'nullable', 'json'],
             'academic_charge_id' => ['sometimes', 'nullable', 'exists:academic_charges,id'],
-            'calendarable_id' => ['required', 'exists:careers,id'],
             'calendarable_type' => ['required', 'string', 'in:career,school'],
+            'calendarable_id' => [
+                'required',
+                'integer',
+                // Check if exists in careers or schools table
+                function ($attribute, $value, $fail) {
+                    if (!DB::table('careers')->where('id', $value)->exists() && !DB::table('schools')->where('id', $value)->exists()) {
+                        $fail('The selected ' . $attribute . ' is invalid.');
+                    }
+                }
+            ],
         ];
     }
 
-    // modify after validation passs
     public function passedValidation()
     {
         $this->merge([
             'user_id' => auth()->user()->id,
-            'calendarable_type' => "App\Models\\" . ucfirst($this->calendarable_type),
         ]);
     }
 }

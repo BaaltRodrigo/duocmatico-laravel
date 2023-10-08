@@ -6,37 +6,53 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddSectionRequest;
 use App\Http\Requests\StoreCalendarRequest;
 use App\Http\Requests\UpdateCalendarRequest;
+use App\Http\Resources\CalendarResource;
+use App\Http\Resources\Collections\CalendarCollection;
 use App\Models\Calendar;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class CalendarController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request): CalendarCollection
+    {
         $user = auth()->user();
 
-        return $user->calendars;
+        return new CalendarCollection($user->calendars->load('academicCharge'));
     }
 
-    public function show(Calendar $calendar) {
-        return $calendar;
+    public function show(Calendar $calendar): CalendarResource
+    {
+        $calendar->load('academicCharge', 'sections', 'calendarable');
+        return new CalendarResource($calendar);
     }
 
-    public function store(StoreCalendarRequest $request) 
+    public function store(StoreCalendarRequest $request): CalendarResource 
     {
         // Authorization handled inside form request
         $validated = $request->validated();
-        $calendar = Calendar::create($validated);
+        // For some reason, the passedValidated does not overwrite the calendarable_type
+        $validated['calendarable_type'] = 'App\Models\\' . ucfirst($validated['calendarable_type']);
+        // Check if validate has uuid or generate one
+        if (!isset($validated['uuid'])) {
+            $validated['uuid'] = Str::uuid();
+        }
 
-        return $calendar;
+        $calendar = Calendar::create($validated + [
+            'user_id' => auth()->user()->id
+        ]);
+
+        return new CalendarResource($calendar);
     }
 
-    public function update(UpdateCalendarRequest $request, Calendar $calendar)
+    public function update(UpdateCalendarRequest $request, Calendar $calendar): CalendarResource
     {
         // Authorization handled inside form request
         $validated = $request->validated();
         $calendar->update($validated);
-        return $calendar;
+        return new CalendarResource($calendar);
     }
 
     public function destroy(Calendar $calendar)

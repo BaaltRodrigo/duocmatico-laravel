@@ -35,11 +35,7 @@ trait UseFirebaseUser
 
     public function createUser(): User
     {
-        return User::factory()->create([
-            'id' => $this->user_id,
-            'name' => $this->user_name,  
-            'email' => $this->user_email
-        ]);
+        return User::factory()->create(['id' => $this->user_id,]);
     }
     
     /**

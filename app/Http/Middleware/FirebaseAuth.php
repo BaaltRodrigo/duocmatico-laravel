@@ -45,16 +45,9 @@ class FirebaseAuth
         $userPayload = $this->auth->getUser($uid);
         
         // Check if the user exists on the tables
-        $user = User::find($userPayload->uid);
+        $user = User::firstOrCreate([ 'id' => $userPayload->uid]);
 
-        if (!$user) {
-            // No user, create one
-            // TODO: Move this into an action or something
-            $user = User::create([
-                'id' => $userPayload->uid,
-                'name' => $userPayload->displayName ?? $userPayload->email,
-                'email' => $userPayload->email,
-            ]);
+        if ($user->wasRecentlyCreated) {
             $user->assignRole('common'); // default role for every user
         }
 

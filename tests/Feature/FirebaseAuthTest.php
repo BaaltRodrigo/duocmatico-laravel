@@ -32,8 +32,6 @@ class FirebaseAuthTest extends TestCase
         $response->assertJsonStructure([
             'user' => [
                 'id',
-                'email',
-                'name',
                 'roles',
             ],
         ]);

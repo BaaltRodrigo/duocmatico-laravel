@@ -18,8 +18,6 @@ class User extends Authenticatable
 
     protected $fillable = [
         'id', // comes from Firebase
-        'name',
-        'email',
     ];
 
     public function calendars(): HasMany

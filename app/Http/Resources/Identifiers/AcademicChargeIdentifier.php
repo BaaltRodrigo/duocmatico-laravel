@@ -14,10 +14,10 @@ class AcademicChargeIdentifier extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $full_name = str_replace('-', ' ', $this->name);
         return [
             'id' => $this->id,
-            'full_name' => "{$full_name} {$this->year}-{$this->semester}",
+            'name' => str_replace('-', ' ', $this->name),
+            'season' => "{$this->year}-{$this->semester}",
             'url' => route('academic-charges.show', $this->id),
         ];
     }

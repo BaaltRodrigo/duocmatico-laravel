@@ -30,7 +30,7 @@ class CalendarResource extends JsonResource
             'academic_charge' => $this->whenLoaded('academicCharge', function () {
                 return AcademicChargeIdentifier::make($this->academicCharge);
             }),
-            
+            'sections' => [],
         ];
     }
 }

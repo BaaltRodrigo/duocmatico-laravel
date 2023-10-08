@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -14,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('calendars', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique()->default(Str::uuid()); // for public purposes
+            $table->string('uuid')->unique(); // for public purposes
             $table->boolean('is_public')->default(false); // for public purposes
             $table->string('name');
             $table->string('description')->nullable();

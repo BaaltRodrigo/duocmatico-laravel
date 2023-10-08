@@ -11,6 +11,8 @@ use App\Http\Resources\Collections\CalendarCollection;
 use App\Models\Calendar;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class CalendarController extends Controller
 {
@@ -18,11 +20,12 @@ class CalendarController extends Controller
     {
         $user = auth()->user();
 
-        return new CalendarCollection($user->calendars);
+        return new CalendarCollection($user->calendars->load('academicCharge'));
     }
 
     public function show(Calendar $calendar): CalendarResource
     {
+        $calendar->load('academicCharge', 'sections', 'calendarable');
         return new CalendarResource($calendar);
     }
 
@@ -32,6 +35,10 @@ class CalendarController extends Controller
         $validated = $request->validated();
         // For some reason, the passedValidated does not overwrite the calendarable_type
         $validated['calendarable_type'] = 'App\Models\\' . ucfirst($validated['calendarable_type']);
+        // Check if validate has uuid or generate one
+        if (!isset($validated['uuid'])) {
+            $validated['uuid'] = Str::uuid();
+        }
 
         $calendar = Calendar::create($validated + [
             'user_id' => auth()->user()->id

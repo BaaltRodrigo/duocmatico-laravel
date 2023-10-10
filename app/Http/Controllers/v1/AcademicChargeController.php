@@ -84,7 +84,6 @@ class AcademicChargeController extends Controller
             ->get();
 
         return SectionCollection::make($sections);
-
     }
 
     public function schools(AcademicCharge $charge): SchoolCollection

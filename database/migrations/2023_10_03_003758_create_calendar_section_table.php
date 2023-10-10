@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('calendar_section', function (Blueprint $table) {
             $table->foreignId('calendar_id')->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('section_id');
+            $table->json('options')->nullable();
 
             $table->foreign('section_id')
                 ->references('id')

@@ -13,7 +13,7 @@ class Section extends Model
 
     protected $table = 'academic_charge_subject';
 
-    protected $with = ['subject', 'schedules'];
+    protected $with = ['subject', 'schedules', 'career', 'school'];
 
     // The attributes that are mass assignable.
     protected $fillable = [

@@ -7,11 +7,11 @@ use App\Http\Requests\ListSectionRequest;
 use App\Http\Requests\StoreAcademicChargeRequest as StoreRequest;
 use App\Http\Requests\UpdateAcademicChargeRequest as UpdateRequest;
 use App\Http\Resources\AcademicChargeResource;
+use App\Http\Resources\Collection\SectionCollection;
 use App\Http\Resources\Collections\AcademicChargeCollection;
 use App\Http\Resources\Collections\CareerCollection;
 use App\Http\Resources\Collections\SchoolCollection;
 use App\Models\AcademicCharge;
-use App\Models\Career;
 use Illuminate\Http\Request;
 
 class AcademicChargeController extends Controller
@@ -74,7 +74,7 @@ class AcademicChargeController extends Controller
         return new CareerCollection($charge->sections->pluck('career')->unique());
     }
 
-    public function sections(ListSectionRequest $request, AcademicCharge $charge)
+    public function sections(ListSectionRequest $request, AcademicCharge $charge): SectionCollection
     {
         // General filtering using resource id and their type
         $validated = $request->validated();
@@ -83,8 +83,7 @@ class AcademicChargeController extends Controller
             ->where($validated['resource_type'].'_id', $validated['resource_id'])
             ->get();
 
-        return $sections;
-
+        return SectionCollection::make($sections);
     }
 
     public function schools(AcademicCharge $charge): SchoolCollection

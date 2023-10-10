@@ -23,6 +23,7 @@ class AddSectionRequest extends FormRequest
     {
         return [
             'section_id' => ['required', 'integer', 'exists:academic_charge_subject,id'],
+            'options' => ['sometimes', 'nullable', 'json'],
         ];
     }
 }

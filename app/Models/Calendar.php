@@ -43,7 +43,8 @@ class Calendar extends Model
 
     public function sections(): BelongsToMany
     {
-        return $this->belongsToMany(Section::class, 'calendar_section', 'calendar_id', 'section_id');
+        return $this->belongsToMany(Section::class, 'calendar_section', 'calendar_id', 'section_id')
+            ->withPivot('options');
     }
 
     public function calendarable(): MorphTo

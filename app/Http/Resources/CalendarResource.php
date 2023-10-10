@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Collection\SectionCollection;
 use App\Http\Resources\Identifiers\AcademicChargeIdentifier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,7 +31,12 @@ class CalendarResource extends JsonResource
             'academic_charge' => $this->whenLoaded('academicCharge', function () {
                 return AcademicChargeIdentifier::make($this->academicCharge);
             }),
-            'sections' => [],
+            'sections' => SectionCollection::make(
+                $this->when(
+                    $this->relationLoaded('sections'),
+                    $this->sections
+                )
+            )
         ];
     }
 }

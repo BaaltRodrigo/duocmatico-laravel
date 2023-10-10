@@ -11,6 +11,7 @@ use App\Http\Resources\Collections\CalendarCollection;
 use App\Models\Calendar;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 
@@ -72,13 +73,13 @@ class CalendarController extends Controller
         $validated = $request->validated();
         // Check if section exists in calendar
         if ($calendar->sections()->where('id', $validated['section_id'])->exists()) {
-            return response()->json(['message' => 'Section already exists in calendar'], 409);
+            return response()->json(['message' => 'Section already exists in calendar'], Response::HTTP_CONFLICT);
         }
 
         // Check if section is from same academic charge
         $section = $calendar->academicCharge->sections()->where('id', $validated['section_id'])->first();
         if (!$section) {
-            return response()->json(['message' => 'Section does not exist in academic charge'], 404);
+            return response()->json(['message' => 'Section does not exist in academic charge'], Response::HTTP_NOT_FOUND);
         }
 
         // TODO: Check if calendarable type id is the same as section school or career
@@ -95,7 +96,13 @@ class CalendarController extends Controller
 
     public function removeSection(Calendar $calendar, Section $section)
     {
+        // check if there is a section to detach
+        if (!$calendar->sections()->where('id', $section->id)->exists()) {
+            return response()->json(['message' => 'Section does not exist in calendar'], Response::HTTP_NOT_FOUND);
+        }
+
         $calendar->sections()->detach($section);
+        
         return response()->json([
             'message' => 'Section removed from calendar',
             'calendar' => $calendar

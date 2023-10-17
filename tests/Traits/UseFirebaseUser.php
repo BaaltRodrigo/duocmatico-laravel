@@ -24,7 +24,7 @@ trait UseFirebaseUser
 
     public function createUser(): User
     {
-        return User::create(['id' => env('FIREBASE_TEST_USER_UID')]);
+        return User::firstOrCreate(['id' => env('FIREBASE_TEST_USER_UID')]);
     }
     
     /**

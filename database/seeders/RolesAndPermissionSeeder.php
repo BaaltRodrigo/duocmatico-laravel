@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -60,5 +61,11 @@ class RolesAndPermissionSeeder extends Seeder
         $common->syncPermissions([
             'academic-charges.index',
         ]);
+
+        // Create an user using the firebase test user uid environment variable
+        if (env('FIREBASE_TEST_USER_UID')) {
+            $user = User::firstOrCreate(['id' => env('FIREBASE_TEST_USER_UID')]);
+            $user->assignRole('super-admin');
+        }
     }
 }

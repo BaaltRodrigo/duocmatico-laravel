@@ -145,7 +145,7 @@ class CalendarTest extends TestCase
         $this->actingAsFirebaseUser();
 
         $response = $this->postJson(route('calendars.sections.store', $calendar->uuid), [
-            'section_id' => $section->id
+            'sections' => [$section->id]
         ]);
 
         $response->assertStatus(201);
@@ -177,30 +177,6 @@ class CalendarTest extends TestCase
         ]);
     }
 
-    // test to allow owners to add a section to a calendar
-    public function test_it_allows_owners_to_add_section_to_calendar(): void
-    {
-        $user = $this->createUser();
-        $section = Section::factory()->create();
-        $calendar = Calendar::factory()->create([
-            'user_id' => $user->id,
-            'academic_charge_id' => $section->academic_charge_id,
-            'calendarable_type' => get_class($section->career),
-            'calendarable_id' => $section->career->id
-        ]);
-        $this->actingAsFirebaseUser();
-
-        $response = $this->postJson(route('calendars.sections.store', $calendar->uuid), [
-            'section_id' => $section->id
-        ]);
-
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('calendar_section', [
-            'calendar_id' => $calendar->id,
-            'section_id' => $section->id
-        ]);
-    }
-
     // test to allow owners to delete a section from a calendar
     public function test_it_allows_owners_to_delete_section_from_calendar(): void
     {
@@ -224,24 +200,35 @@ class CalendarTest extends TestCase
         ]);
     }
 
-    public function test_it_does_not_add_duplicate_sections_to_calendars(): void
+    public function test_it_can_add_multiple_sections_at_once(): void
     {
         $user = $this->createUser();
-        $section = Section::factory()->create();
+        $sections = Section::factory()->count(3)->create();
         $calendar = Calendar::factory()->create([
             'user_id' => $user->id,
-            'academic_charge_id' => $section->academic_charge_id,
-            'calendarable_type' => get_class($section->career),
-            'calendarable_id' => $section->career->id
+            'academic_charge_id' => $sections[0]->academic_charge_id,
+            'calendarable_type' => get_class($sections[0]->career),
+            'calendarable_id' => $sections[0]->career->id
         ]);
-        $calendar->sections()->attach($section);
         $this->actingAsFirebaseUser();
 
         $response = $this->postJson(route('calendars.sections.store', $calendar->uuid), [
-            'section_id' => $section->id
+            'sections' => $sections->pluck('id')
         ]);
 
-        $response->assertStatus(Response::HTTP_CONFLICT);
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('calendar_section', [
+            'calendar_id' => $calendar->id,
+            'section_id' => $sections[0]->id
+        ]);
+        $this->assertDatabaseHas('calendar_section', [
+            'calendar_id' => $calendar->id,
+            'section_id' => $sections[1]->id
+        ]);
+        $this->assertDatabaseHas('calendar_section', [
+            'calendar_id' => $calendar->id,
+            'section_id' => $sections[2]->id
+        ]);
     }
 
     public function test_it_returns_404_removing_non_attached_sections(): void

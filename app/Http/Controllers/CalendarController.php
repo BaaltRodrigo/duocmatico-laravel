@@ -68,25 +68,15 @@ class CalendarController extends Controller
         return $calendar->sections;
     }
 
-    public function addSection(AddSectionRequest $request, Calendar $calendar)
+    public function addSections(AddSectionRequest $request, Calendar $calendar)
     {
         $validated = $request->validated();
-        // Check if section exists in calendar
-        if ($calendar->sections()->where('id', $validated['section_id'])->exists()) {
-            return response()->json(['message' => 'Section already exists in calendar'], Response::HTTP_CONFLICT);
-        }
 
-        // Check if section is from same academic charge
-        $section = $calendar->academicCharge->sections()->where('id', $validated['section_id'])->first();
-        if (!$section) {
-            return response()->json(['message' => 'Section does not exist in academic charge'], Response::HTTP_NOT_FOUND);
-        }
-
+        // TODO: Check if all sections are from the same academic charge
         // TODO: Check if calendarable type id is the same as section school or career
 
-
-        // Attach section
-        $calendar->sections()->attach($section);
+        // sync sections
+        $calendar->sections()->sync($validated['sections']);
         
         return response()->json([
             'message' => 'Section added to calendar',

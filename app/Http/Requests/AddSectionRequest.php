@@ -22,8 +22,8 @@ class AddSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'section_id' => ['required', 'integer', 'exists:academic_charge_subject,id'],
-            'options' => ['sometimes', 'nullable', 'json'],
+            'sections' => ['required', 'array', 'nullable'],
+            'sections.*' => ['required', 'integer', 'exists:academic_charge_subject,id'],
         ];
     }
 }

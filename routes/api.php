@@ -67,6 +67,6 @@ Route::apiResource('calendars', CalendarController::class)
 Route::prefix('/calendars/{calendar}')->group(function () {
     Route::get('/', [CalendarController::class, 'show'])->name('calendars.show');
     Route::get('/sections', [CalendarController::class, 'calendarSections'])->name('calendars.sections');
-    Route::post('/sections', [CalendarController::class, 'addSection'])->name('calendars.sections.store');
+    Route::post('/sections', [CalendarController::class, 'addSections'])->name('calendars.sections.store');
     Route::delete('/sections/{section}', [CalendarController::class, 'removeSection'])->name('calendars.sections.destroy');
 });

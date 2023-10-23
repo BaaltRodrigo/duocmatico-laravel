@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class HandleAcademicChargeFileLoad
 {
-    public function execute(AcademicCharge $charge, array $fileLines)
+    public static function execute($validated): AcademicCharge
     {
         // Only for log purposes
         $counters = [
@@ -25,12 +25,23 @@ class HandleAcademicChargeFileLoad
             'duplicate schedules' => 0,
         ];
 
-        // map the headers to line numbers
-        $headers = array_shift($fileLines);
+        // Read the file uploaded
+        $csvData = array_map('str_getcsv', file($validated['file']));
+        $headers = array_shift($csvData);
+        // Replace the first element special character \u{FEFF} (zero width no-break space)
+        $headers[0] = ltrim($headers[0], "\u{FEFF}");
+        //Map the headers to line numbers
         $headers = array_flip($headers);
 
+        // Create the academic charge
+        $charge = AcademicCharge::create([
+            'year' => $csvData[1][$headers['Año']],
+            'semester' => $csvData[1][$headers['Período']],
+            'name' => $csvData[1][$headers['Sede']],
+        ]);
+
         // The following lines will create every necessary model for the academic charge
-        foreach ($fileLines as $line) {
+        foreach ($csvData as $line) {
             // Create or get the Career
             $career = Career::firstOrCreate([
                 'name' => Str::slug($line[$headers['Carrera']])
@@ -86,7 +97,7 @@ class HandleAcademicChargeFileLoad
             }
         }
 
-        info('Lines inside file: ' . count($fileLines));
+        info('Lines inside file: ' . count($csvData));
         info('Careers created: ' . $counters['careers']);
         info('Schools created: ' . $counters['schools']);
         info('Subjects created: ' . $counters['subjects']);

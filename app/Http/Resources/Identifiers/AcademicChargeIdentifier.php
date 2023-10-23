@@ -18,6 +18,7 @@ class AcademicChargeIdentifier extends JsonResource
             'id' => $this->id,
             'name' => str_replace('-', ' ', $this->name),
             'season' => "{$this->year}-{$this->semester}",
+            'is_hidden' => $this->is_hidden,
             'url' => route('academic-charges.show', $this->id),
         ];
     }

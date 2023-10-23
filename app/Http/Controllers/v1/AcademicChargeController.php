@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1;
 
+use App\Actions\HandleAcademicChargeFileLoad;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListSectionRequest;
 use App\Http\Requests\StoreAcademicChargeRequest as StoreRequest;
@@ -11,6 +12,7 @@ use App\Http\Resources\Collection\SectionCollection;
 use App\Http\Resources\Collections\AcademicChargeCollection;
 use App\Http\Resources\Collections\CareerCollection;
 use App\Http\Resources\Collections\SchoolCollection;
+use App\Http\Resources\Identifiers\AcademicChargeIdentifier;
 use App\Models\AcademicCharge;
 use Illuminate\Http\Request;
 
@@ -40,12 +42,15 @@ class AcademicChargeController extends Controller
         return new AcademicChargeResource($charge);
     }
 
-    public function store(StoreRequest $request): AcademicChargeResource
+    public function store(StoreRequest $request): AcademicChargeIdentifier
     {
         $validated = $request->validated();
-        $academicCharge = AcademicCharge::create($validated);
 
-        return new AcademicChargeResource($academicCharge);
+        // TODO: Optimize this to avoid the creation of the same academic charge
+        // TODO: Move this to an job or something to avoid frontend waiting for the response
+        $charge = HandleAcademicChargeFileLoad::execute($validated);
+
+        return new AcademicChargeIdentifier($charge);
     }
 
     public function update(UpdateRequest $request, AcademicCharge $charge): AcademicChargeResource

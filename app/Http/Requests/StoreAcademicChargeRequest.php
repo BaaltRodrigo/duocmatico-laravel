@@ -25,10 +25,7 @@ class StoreAcademicChargeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'year' => ['required', 'integer'],
-            'semester' => ['required', 'string'],
-            'is_hidden' => ['sometimes', 'boolean'],
+            'file' => ['required', 'file', 'mimes:csv,txt']
         ];
     }
 }

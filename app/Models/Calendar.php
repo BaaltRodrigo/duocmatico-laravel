@@ -26,6 +26,8 @@ class Calendar extends Model
         'calendarable_type',
     ];
 
+    public $with = ['academicCharge', 'calendarable'];
+
     public function academicCharge(): BelongsTo
     {
         return $this->belongsTo(AcademicCharge::class, 'academic_charge_id');

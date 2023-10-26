@@ -20,6 +20,7 @@ class CalendarIdentifier extends JsonResource
             'uuid' => $this->uuid,
             'name' => $this->name,
             'calendarable_type' => end($calendarable_type),
+            'is_public' => $this->is_public,
             'calendarable' => [
                 'id' => $this->calendarable_id,
                 'name' => $this->calendarable->name,

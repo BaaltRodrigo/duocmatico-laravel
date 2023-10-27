@@ -24,7 +24,7 @@ trait UseFirebaseUser
 
     public function createUser(): User
     {
-        return User::firstOrCreate(['id' => env('FIREBASE_TEST_USER_UID')]);
+        return User::firstOrCreate(['id' => config('firebase.test_user_uid')]);
     }
     
     /**
@@ -39,7 +39,7 @@ trait UseFirebaseUser
         // As passwords has limited attempts to be checked, we created a custom token
         $customToken = $auth->createCustomToken($user->id);
         $signInResults = $auth->signInWithCustomToken($customToken->toString());
-        $token = $signInResults->idToken();;
+        $token = $signInResults->idToken();
         
         $this->withHeader('Authorization', 'Bearer ' .  $token);
     }

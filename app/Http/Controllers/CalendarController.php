@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddSectionRequest;
 use App\Http\Requests\StoreCalendarRequest;
 use App\Http\Requests\UpdateCalendarRequest;
+use App\Http\Requests\UpdateSectionsRequest;
 use App\Http\Resources\CalendarResource;
 use App\Http\Resources\Collections\CalendarCollection;
 use App\Models\Calendar;
-use App\Models\Section;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 
@@ -85,7 +83,7 @@ class CalendarController extends Controller
      * 
      * TODO: Normalize the return of the function
      */
-    public function updateSections(AddSectionRequest $request, Calendar $calendar)
+    public function updateSections(UpdateSectionsRequest $request, Calendar $calendar)
     {
         info('[Calendar Controller] Pre request validations');
         $validated = $request->validated();

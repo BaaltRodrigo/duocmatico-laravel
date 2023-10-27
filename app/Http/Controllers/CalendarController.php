@@ -26,6 +26,8 @@ class CalendarController extends Controller
 
     public function show(Calendar $calendar): CalendarResource
     {
+        $this->authorize('view', $calendar);
+
         $calendar->load('academicCharge', 'sections', 'calendarable');
         return new CalendarResource($calendar);
     }
@@ -34,6 +36,7 @@ class CalendarController extends Controller
     {
         // Authorization handled inside form request
         $validated = $request->validated();
+        
         // For some reason, the passedValidated does not overwrite the calendarable_type
         $validated['calendarable_type'] = 'App\Models\\' . ucfirst($validated['calendarable_type']);
         // Check if validate has uuid or generate one
@@ -52,25 +55,41 @@ class CalendarController extends Controller
     {
         // Authorization handled inside form request
         $validated = $request->validated();
+
         $calendar->update($validated);
+        
         return new CalendarResource($calendar);
     }
 
     public function destroy(Calendar $calendar)
     {
+        $this->authorize('destroy', $calendar);
+
         $calendar->delete();
+
         return response()->json(['message' => 'Calendar deleted'], 204);
     }
 
     // Section related functions
     public function sections(Calendar $calendar)
     {
+        $this->authorize('view', $calendar);
+
         return $calendar->sections;
     }
 
-    public function addSections(AddSectionRequest $request, Calendar $calendar)
+    /**
+     * This function handles the update, add and delete calendar sections.
+     * As the request should have an array or null corresponding to the
+     * sections attached to the calendar. Null removes all sections.
+     * 
+     * TODO: Normalize the return of the function
+     */
+    public function updateSections(AddSectionRequest $request, Calendar $calendar)
     {
+        info('[Calendar Controller] Pre request validations');
         $validated = $request->validated();
+        info('[Calendar Controller] Post request validations');
 
         // TODO: Check if all sections are from the same academic charge
         // TODO: Check if calendarable type id is the same as section school or career
@@ -79,23 +98,8 @@ class CalendarController extends Controller
         $calendar->sections()->sync($validated['sections']);
         
         return response()->json([
-            'message' => 'Section added to calendar',
+            'message' => 'Sections updated',
             'calendar' => $calendar
-        ], 201);
-    }
-
-    public function removeSection(Calendar $calendar, Section $section)
-    {
-        // check if there is a section to detach
-        if (!$calendar->sections()->where('id', $section->id)->exists()) {
-            return response()->json(['message' => 'Section does not exist in calendar'], Response::HTTP_NOT_FOUND);
-        }
-
-        $calendar->sections()->detach($section);
-        
-        return response()->json([
-            'message' => 'Section removed from calendar',
-            'calendar' => $calendar
-        ], 204);
+        ], 200);
     }
 }

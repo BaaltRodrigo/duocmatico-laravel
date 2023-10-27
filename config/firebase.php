@@ -10,6 +10,8 @@ return [
      */
     'default' => env('FIREBASE_PROJECT', 'app'),
 
+    'test_user_uid' => env('FIREBASE_TEST_USER_UID', 'default-uid'),
+
     /*
      * ------------------------------------------------------------------------
      * Firebase project configurations

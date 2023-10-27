@@ -5,8 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
-class UpdateCalendarRequest extends FormRequest
+class UpdateSectionsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +25,14 @@ class UpdateCalendarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
-            'is_public' => ['sometimes', 'boolean'],
-            'description' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'options' => ['sometimes', 'nullable', 'max:255'],
+            'sections' => ['sometimes', 'array', ],
+            'sections.*' => [
+                Rule::requiredIf($this->input('sections') !== []),
+                'sometimes', 
+                'integer', 
+                'exists:academic_charge_subject,id'
+            ],
         ];
     }
+
 }

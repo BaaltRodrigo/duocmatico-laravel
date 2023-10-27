@@ -24,21 +24,23 @@ trait UseFirebaseUser
 
     public function createUser(): User
     {
-        return User::firstOrCreate(['id' => env('FIREBASE_TEST_USER_UID')]);
+        return User::firstOrCreate(['id' => config('firebase.test_user_uid')]);
     }
     
     /**
      * Always acts as the default user signed inside firebase auth
+     * 
+     * This sets the Bearer token with a custom id token.
      */
-    public function actingAsFirebaseUser(): void
+    public function actingAsFirebaseUser(User $user): void
     {
         $auth = Firebase::auth();
-        $email = env('FIREBASE_TEST_USER_EMAIL');
-        $password = env('FIREBASE_TEST_USER_PASSWORD');
-        $signInResult = $auth->signInWithEmailAndPassword($email, $password); 
 
-        $token = $signInResult->idToken();
+        // As passwords has limited attempts to be checked, we created a custom token
+        $customToken = $auth->createCustomToken($user->id);
+        $signInResults = $auth->signInWithCustomToken($customToken->toString());
+        $token = $signInResults->idToken();
         
-        $this->withHeader('Authorization', 'Bearer ' . $token);
+        $this->withHeader('Authorization', 'Bearer ' .  $token);
     }
 }

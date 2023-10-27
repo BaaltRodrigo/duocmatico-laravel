@@ -68,7 +68,8 @@ class CalendarTest extends TestCase
     {
         $user = $this->createUser();
         Calendar::factory()->count(4)->create();
-        $this->actingAsFirebaseUser();
+        Calendar::factory()->count(2)->create(['user_id' => null]);
+        $this->actingAsFirebaseUser($user);
             
         $response = $this->getJson(route('calendars.index'));
 
@@ -89,7 +90,7 @@ class CalendarTest extends TestCase
             'calendarable_id' => $career->id,
             'calendarable_type' => 'career' // Front does not have the namespaced class
         ];
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->postJson(route('calendars.store'), $data);
 
@@ -105,7 +106,7 @@ class CalendarTest extends TestCase
         $data = [
             'name' => 'Test calendar',
         ];
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->putJson(route('calendars.update', $calendar->uuid), $data);
 
@@ -122,7 +123,7 @@ class CalendarTest extends TestCase
         $calendar = Calendar::factory()->create([
             'user_id' => $user->id
         ]);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->deleteJson(route('calendars.destroy', $calendar->uuid));
 
@@ -142,13 +143,14 @@ class CalendarTest extends TestCase
             'calendarable_type' => get_class($section->career),
             'calendarable_id' => $section->career->id
         ]);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
-        $response = $this->postJson(route('calendars.sections.store', $calendar->uuid), [
-            'sections' => [$section->id]
-        ]);
+        $response = $this->patchJson(
+            route('calendars.sections.update', $calendar->uuid),
+            ['sections' => [$section->id]]
+        );
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         $this->assertDatabaseHas('calendar_section', [
             'calendar_id' => $calendar->id,
             'section_id' => $section->id
@@ -166,86 +168,59 @@ class CalendarTest extends TestCase
             'calendarable_id' => $section->career->id
         ]);
         $calendar->sections()->attach($section);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
-        $response = $this->deleteJson(route('calendars.sections.destroy', [$calendar->uuid, $section->id]));
+        // empty array removes all sections.
+        $response = $this->patchJson(
+            route('calendars.sections.update', [$calendar->uuid]),
+            ['sections' => []]
+        );
 
-        $response->assertStatus(204);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('calendar_section', [
             'calendar_id' => $calendar->id,
             'section_id' => $section->id
         ]);
     }
 
-    // test to allow owners to delete a section from a calendar
-    public function test_it_allows_owners_to_delete_section_from_calendar(): void
+    public function test_it_denies_access_to_private_calendars(): void
     {
-        $user = $this->createUser();
-        $section = Section::factory()->create();
         $calendar = Calendar::factory()->create([
-            'user_id' => $user->id,
-            'academic_charge_id' => $section->academic_charge_id,
-            'calendarable_type' => get_class($section->career),
-            'calendarable_id' => $section->career->id
+            'user_id' => null,
+            'is_public' => false
         ]);
-        $calendar->sections()->attach($section);
-        $this->actingAsFirebaseUser();
 
-        $response = $this->deleteJson(route('calendars.sections.destroy', [$calendar->uuid, $section->id]));
+        $response = $this->getJson(route('calendars.show', $calendar->uuid));
 
-        $response->assertStatus(204);
-        $this->assertDatabaseMissing('calendar_section', [
-            'calendar_id' => $calendar->id,
-            'section_id' => $section->id
-        ]);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_it_can_add_multiple_sections_at_once(): void
+    public function test_it_denies_delete_non_owned_calendars(): void
     {
-        $user = $this->createUser();
-        $sections = Section::factory()->count(3)->create();
         $calendar = Calendar::factory()->create([
-            'user_id' => $user->id,
-            'academic_charge_id' => $sections[0]->academic_charge_id,
-            'calendarable_type' => get_class($sections[0]->career),
-            'calendarable_id' => $sections[0]->career->id
+            'user_id' => null,
+            'is_public' => false
         ]);
-        $this->actingAsFirebaseUser();
+        $user = $this->createUser();
+        $this->actingAsFirebaseUser($user);
 
-        $response = $this->postJson(route('calendars.sections.store', $calendar->uuid), [
-            'sections' => $sections->pluck('id')
-        ]);
+        $response = $this->deleteJson(route('calendars.destroy', $calendar->uuid));
 
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('calendar_section', [
-            'calendar_id' => $calendar->id,
-            'section_id' => $sections[0]->id
-        ]);
-        $this->assertDatabaseHas('calendar_section', [
-            'calendar_id' => $calendar->id,
-            'section_id' => $sections[1]->id
-        ]);
-        $this->assertDatabaseHas('calendar_section', [
-            'calendar_id' => $calendar->id,
-            'section_id' => $sections[2]->id
-        ]);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function test_it_returns_404_removing_non_attached_sections(): void
+    public function test_it_denies_update_non_owned_calendars(): void
     {
-        $user = $this->createUser();
-        $section = Section::factory()->create();
         $calendar = Calendar::factory()->create([
-            'user_id' => $user->id,
-            'academic_charge_id' => $section->academic_charge_id,
-            'calendarable_type' => get_class($section->career),
-            'calendarable_id' => $section->career->id
+            'user_id' => null,
+            'is_public' => false
         ]);
-        $this->actingAsFirebaseUser();
+        $user = $this->createUser();
+        $this->actingAsFirebaseUser($user);
 
-        $response = $this->deleteJson(route('calendars.sections.destroy', [$calendar->uuid, $section->id]));
+        $response = $this->patchJson(route('calendars.destroy', $calendar->uuid), ['is_public' => true]);
 
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
 }

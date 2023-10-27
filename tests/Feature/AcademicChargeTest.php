@@ -48,7 +48,7 @@ class AcademicChargeTest extends TestCase
     public function test_it_allows_admin_to_upload_academic_charge_file(): void
     {
         $user = $this->createUserWithRoles(['duoc']);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         // get a file from database/data folder
         $file = new UploadedFile($this->CSV_PATH, 'SAN-JOAQUIN 2023-1.csv', 'text/csv', null, true);
@@ -66,7 +66,7 @@ class AcademicChargeTest extends TestCase
     {
         $academicCharge = AcademicCharge::factory()->create();
         $user = $this->createUserWithRoles(['duoc']);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
         
         $response = $this->putJson(route('academic-charges.update', $academicCharge), [
             'name' => 'New name',
@@ -85,7 +85,7 @@ class AcademicChargeTest extends TestCase
     {
         $academicCharge = AcademicCharge::factory()->create();
         $user = $this->createUserWithRoles(['duoc']);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->deleteJson(route('academic-charges.destroy', $academicCharge));
 
@@ -99,7 +99,7 @@ class AcademicChargeTest extends TestCase
     {
         $academicCharge = AcademicCharge::factory()->make();
         $user = $this->createUserWithRoles(['common']);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->postJson(route('academic-charges.store'), $academicCharge->toArray());
 
@@ -111,7 +111,7 @@ class AcademicChargeTest extends TestCase
     {
         $academicCharge = AcademicCharge::factory()->create();
         $user = $this->createUserWithRoles(['common']);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->putJson(route('academic-charges.update', $academicCharge), [
             'name' => 'New name',
@@ -125,7 +125,7 @@ class AcademicChargeTest extends TestCase
     {
         $academicCharge = AcademicCharge::factory()->create();
         $user = $this->createUserWithRoles(['common']);
-        $this->actingAsFirebaseUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->deleteJson(route('academic-charges.destroy', $academicCharge));
 

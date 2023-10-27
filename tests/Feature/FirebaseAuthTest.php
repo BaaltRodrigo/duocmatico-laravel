@@ -23,17 +23,17 @@ class FirebaseAuthTest extends TestCase
 
     public function test_it_pass_with_a_valid_user(): void
     {
-        $this->actingAsFirebaseUser();
+        $user = $this->createUser();
+        $this->actingAsFirebaseUser($user);
 
         $response = $this->getJson('/api/auth/me');
 
         // assert successful response or created
         $response->assertSuccessful();
         $response->assertJsonStructure([
-            'user' => [
-                'id',
-                'roles',
-            ],
+            'id',
+            'roles',
+            'permissions'
         ]);
     }
 }

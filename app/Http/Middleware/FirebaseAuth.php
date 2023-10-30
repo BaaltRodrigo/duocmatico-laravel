@@ -21,19 +21,28 @@ class FirebaseAuth
 
     /**
      * Handle an incoming request.
+     * This middleware has
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $mode strict|optional If the auth methods is optional, the user is not required to be authenticated
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ?string $mode = 'strict'): Response
     {
         // Check for the token in the header
         $token = $request->bearerToken();
 
-        if (!$token) {
+        // If the auth is optional, the user is not required to be authenticated
+        $optional = $mode === 'optional';
+
+        if (!$token && !$optional) {
             return response()->json(['status' => 'error','message' => 'Token not provided'], Response::HTTP_UNAUTHORIZED);
+        } elseif (!$token && $optional) {
+            // Token not provided but optional, proceed
+            return $next($request);
         }
 
-        // Verify the token
+        // Verify the token as the route is without optional route
         $verifiedIdToken = $this->auth->verifyIdToken(
             $token,
             $checkIfRevoked = true,

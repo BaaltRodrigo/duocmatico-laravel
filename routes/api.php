@@ -65,7 +65,9 @@ Route::apiResource('calendars', CalendarController::class)
 // Show for calendars needs to be outside middleware because there
 // are public calendars that don't need to be authenticated
 Route::prefix('/calendars/{calendar}')->group(function () {
-    Route::get('/', [CalendarController::class, 'show'])->name('calendars.show');
+    Route::get('/', [CalendarController::class, 'show'])
+        ->middleware('auth.firebase:optional')
+        ->name('calendars.show');
     Route::get('/sections', [CalendarController::class, 'calendarSections'])->name('calendars.sections');
     Route::match(['put', 'patch'], '/sections', [CalendarController::class, 'updateSections'])
         ->middleware('auth.firebase')

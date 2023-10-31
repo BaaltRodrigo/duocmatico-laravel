@@ -192,7 +192,7 @@ class CalendarTest extends TestCase
         $response = $this->postJson(route('calendars.store'), $calendar->toArray());
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $response->assertDataMissing('calendars', ['uuid' => $calendar->uuid]);
+        $this->assertDatabaseMissing('calendars', ['uuid' => $calendar->uuid]);
     }
 
     public function test_it_denies_delete_non_owned_calendars(): void

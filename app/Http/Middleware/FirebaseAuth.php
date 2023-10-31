@@ -33,20 +33,20 @@ class FirebaseAuth
         $token = $request->bearerToken();
 
         // If the auth is optional, the user is not required to be authenticated
-        $optional = $mode === 'optional';
+        $is_optional = $mode === 'optional';
 
-        if (!$token && !$optional) {
-            return response()->json(['status' => 'error','message' => 'Token not provided'], Response::HTTP_UNAUTHORIZED);
-        } elseif (!$token && $optional) {
-            // Token not provided but optional, proceed
-            return $next($request);
+        if (!$token) {
+            return $is_optional
+                ? $next($request) 
+                : response()->json(['status' => 'error','message' => 'Token not provided'], Response::HTTP_UNAUTHORIZED);
         }
-
+        
+        // From here, the token is present and we can proceed to verify it
         // Verify the token as the route is without optional route
         $verifiedIdToken = $this->auth->verifyIdToken(
             $token,
-            $checkIfRevoked = true,
-            $leewayInSeconds = 3600 // Handle 1 hour of delay from the client
+            false, // Check if the token is revoked
+            3600 // Handle 1 hour of delay from the client
         );
         
         // Set the user in the request and proceed

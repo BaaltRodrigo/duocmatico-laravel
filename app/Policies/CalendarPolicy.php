@@ -19,12 +19,19 @@ class CalendarPolicy
         // 
     }
 
-    public function view(User $user, Calendar $calendar)
+    public function view(?User $user, Calendar $calendar)
     {
-        // Check if user owns calendar
-        $is_owner = $user->id === $calendar->user_id;
+        // Early exit to public calendar with or without user
+        if ($calendar->is_public) {
+            return Response::allow();
+        }
+
+        // If user is null, then it is a guest
+        if ($user === null) {
+            return Response::deny('You are not allowed to view this calendar');
+        }
         
-        return $is_owner || $calendar->is_public
+        return $user->id === $calendar->user_id
             ? Response::allow()
             : Response::deny('You are not allowed to view this calendar');
     }

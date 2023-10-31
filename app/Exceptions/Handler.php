@@ -34,7 +34,9 @@ class Handler extends ExceptionHandler
          * Firebase error handling
          */
         $this->renderable(function (FailedToVerifyToken $e, Request $request) {
-            return response()->json(['status' => 'error','message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
+            return response()->json(
+                ['status' => 'error', 'message' => 'Invalid or malformed token'],
+                Response::HTTP_UNAUTHORIZED);
         });
     }
 }

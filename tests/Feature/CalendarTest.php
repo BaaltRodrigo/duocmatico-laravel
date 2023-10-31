@@ -183,16 +183,16 @@ class CalendarTest extends TestCase
         ]);
     }
 
-    public function test_it_denies_access_to_private_calendars(): void
+    public function test_it_denies_when_guests_create_calendars(): void
     {
-        $calendar = Calendar::factory()->create([
-            'user_id' => null,
-            'is_public' => false
+        $calendar = Calendar::factory()->make([
+            'user_id' => null
         ]);
 
-        $response = $this->getJson(route('calendars.show', $calendar->uuid));
+        $response = $this->postJson(route('calendars.store'), $calendar->toArray());
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $this->assertDatabaseMissing('calendars', ['uuid' => $calendar->uuid]);
     }
 
     public function test_it_denies_delete_non_owned_calendars(): void

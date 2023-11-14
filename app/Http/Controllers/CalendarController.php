@@ -36,11 +36,14 @@ class CalendarController extends Controller
         $validated = $request->validated();
         
         // For some reason, the passedValidated does not overwrite the calendarable_type
-        $validated['calendarable_type'] = 'App\Models\\' . ucfirst($validated['calendarable_type']);
+        $validated['calendarable']['type'] = 'App\Models\\' . ucfirst($validated['calendarable']['type']);
 
         $calendar = Calendar::create($validated + [
             'uuid' => Str::uuid(), // Always generate a new uuid
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
+            'calendarable_type' => $validated['calendarable']['type'],
+            'calendarable_id' => $validated['calendarable']['id'],
+            'academic_charge_id' => $validated['academic_charge']['id'],
         ]);
 
         return new CalendarResource($calendar);

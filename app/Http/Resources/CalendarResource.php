@@ -22,11 +22,11 @@ class CalendarResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'is_public' => $this->is_public,
-            'options' => $this->options,
-            'calendarable_type' => end($calendarable),
+            'owner_id' => $this->user_id,
             'calendarable' => [
                 'id' => $this->calendarable_id,
                 'name' => $this->calendarable->name,
+                'type' => strtolower(end($calendarable))
             ],
             'academic_charge' => $this->whenLoaded('academicCharge', function () {
                 return AcademicChargeIdentifier::make($this->academicCharge);

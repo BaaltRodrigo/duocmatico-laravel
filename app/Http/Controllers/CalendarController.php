@@ -37,12 +37,9 @@ class CalendarController extends Controller
         
         // For some reason, the passedValidated does not overwrite the calendarable_type
         $validated['calendarable_type'] = 'App\Models\\' . ucfirst($validated['calendarable_type']);
-        // Check if validate has uuid or generate one
-        if (!isset($validated['uuid'])) {
-            $validated['uuid'] = Str::uuid();
-        }
 
         $calendar = Calendar::create($validated + [
+            'uuid' => Str::uuid(), // Always generate a new uuid
             'user_id' => auth()->user()->id
         ]);
 
@@ -95,9 +92,6 @@ class CalendarController extends Controller
         // sync sections
         $calendar->sections()->sync($validated['sections']);
         
-        return response()->json([
-            'message' => 'Sections updated',
-            'calendar' => $calendar
-        ], 200);
+        return new CalendarResource($calendar);
     }
 }

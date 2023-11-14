@@ -45,7 +45,7 @@ class FirebaseAuth
         // Verify the token as the route is without optional route
         $verifiedIdToken = $this->auth->verifyIdToken(
             $token,
-            false, // Check if the token is revoked
+            true, // Check if the token is revoked
             3600 // Handle 1 hour of delay from the client
         );
         

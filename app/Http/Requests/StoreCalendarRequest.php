@@ -28,7 +28,6 @@ class StoreCalendarRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'uuid' => ['sometimes', 'string', 'max:255'],
             'is_public' => ['sometimes', 'boolean'],
             'options' => ['sometimes', 'nullable', 'json'],
             'academic_charge_id' => ['sometimes', 'nullable', 'exists:academic_charges,id'],

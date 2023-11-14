@@ -28,12 +28,17 @@ class StoreCalendarRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'uuid' => ['sometimes', 'string', 'max:255'],
             'is_public' => ['sometimes', 'boolean'],
             'options' => ['sometimes', 'nullable', 'json'],
-            'academic_charge_id' => ['sometimes', 'nullable', 'exists:academic_charges,id'],
-            'calendarable_type' => ['required', 'string', 'in:career,school'],
-            'calendarable_id' => [
+            
+            // Academic charge object validation
+            'academic_charge' => ['required', 'array'],
+            'academic_charge.id' => ['required', 'integer', 'exists:academic_charges,id'],
+            
+            // Calendarable object validation
+            'calendarable' => ['required', 'array'],
+            'calendarable.type' => ['required', 'string', 'in:career,school'],
+            'calendarable.id' => [
                 'required',
                 'integer',
                 // Check if exists in careers or schools table
@@ -42,7 +47,7 @@ class StoreCalendarRequest extends FormRequest
                         $fail('The selected ' . $attribute . ' is invalid.');
                     }
                 }
-            ],
+            ]
         ];
     }
 

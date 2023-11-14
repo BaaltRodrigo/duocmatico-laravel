@@ -19,7 +19,7 @@ class Calendar extends Model
         'is_public',
         'name',
         'description',
-        'options', // Custom data that user provides
+        // 'options', // Custom data that user provides
         'user_id',
         'academic_charge_id',
         'calendarable_id',

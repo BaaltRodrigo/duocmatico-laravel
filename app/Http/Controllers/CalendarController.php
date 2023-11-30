@@ -44,9 +44,10 @@ class CalendarController extends Controller
             'calendarable_type' => $validated['calendarable']['type'],
             'calendarable_id' => $validated['calendarable']['id'],
             'academic_charge_id' => $validated['academic_charge']['id'],
+            'is_public' => $validated['is_public'] ?? false,
         ]);
 
-        return new CalendarResource($calendar);
+        return new CalendarResource($calendar->load('academicCharge', 'sections', 'calendarable'));
     }
 
     public function update(UpdateCalendarRequest $request, Calendar $calendar): CalendarResource

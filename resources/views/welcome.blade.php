@@ -12,4 +12,4 @@
     </div>
     <script src="{{ mix('js/main.js') }}"></script>
 </body>
-</html>S
+</html>

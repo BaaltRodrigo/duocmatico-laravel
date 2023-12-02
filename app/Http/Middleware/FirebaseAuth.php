@@ -7,7 +7,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Kreait\Laravel\Firebase\Facades\Firebase;
-use Firebase\Auth\Token\Exception\IssuedInTheFuture;
 
 class FirebaseAuth
 {
@@ -45,7 +44,7 @@ class FirebaseAuth
         // Verify the token as the route is without optional route
         $verifiedIdToken = $this->auth->verifyIdToken(
             $token,
-            true, // Check if the token is revoked
+            false, // Check if the token is revoked
             3600 // Handle 1 hour of delay from the client
         );
         

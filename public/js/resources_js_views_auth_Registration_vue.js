@@ -136,15 +136,16 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
             case 8:
               if (_this.user) {
                 _this.$router.push({
-                  name: "login"
+                  name: "home"
                 });
               }
-              _context.next = 13;
+              _context.next = 14;
               break;
             case 11:
               _context.prev = 11;
               _context.t0 = _context["catch"](5);
-            case 13:
+              console.log(_context.t0);
+            case 14:
             case "end":
               return _context.stop();
           }

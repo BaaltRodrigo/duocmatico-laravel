@@ -86,6 +86,7 @@ export default {
     async submitForm() {
       const isValid = await this.v$.$validate();
       if (!isValid) return;
+
       try {
         await this.registration({
           email: this.email,
@@ -94,9 +95,11 @@ export default {
         });
 
         if (this.user) {
-          this.$router.push({ name: "login" });
+          this.$router.push({ name: "home" });
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
     },
   },
 };

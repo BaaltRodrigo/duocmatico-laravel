@@ -49,14 +49,13 @@ const actions = {
 
     if (!user) return; // early exit
 
-    commit("setToken", await user.getIdToken());
     commit("setUser", user);
 
-    dispatch("getCurrentRolesAndPermission");
+    await dispatch("getCurrentRolesAndPermission");
   },
 
-  async getCurrentRolesAndPermission({ commit, rootState, state }) {
-    const { token } = state;
+  async getCurrentRolesAndPermission({ commit, rootState }) {
+    const token = await auth.currentUser?.getIdToken();
     const response = await axios.get(`${rootState.apiUrl}/auth/me`, {
       headers: {
         Authorization: `Bearer ` + token,
@@ -67,6 +66,7 @@ const actions = {
 
     commit("setRoles", roles);
     commit("setPermissions", permissions);
+    return response.data
   },
 
   async loginWhitGoogle({ commit }) {
@@ -74,10 +74,8 @@ const actions = {
       const provider = new GoogleAuthProvider();
       await setPersistence(auth, browserLocalPersistence);
       const response = await signInWithPopup(auth, provider);
-      const token = await response.user.getIdToken();
 
       commit("setUser", response.user);
-      commit("setToken", token);
     } catch (error) {
       console.log(error);
     }
@@ -88,9 +86,7 @@ const actions = {
       await setPersistence(auth, browserLocalPersistence);
       const response = await signInWithEmailAndPassword(auth, email, password);
 
-      const token = await response.user.getIdToken();
       commit("setUser", response.user);
-      commit("setToken", token);
     } catch (error) {
       console.error(error);
     }
@@ -100,13 +96,14 @@ const actions = {
     await signOut(auth);
     // Clean auth status
     commit("setUser", null);
-    commit("setToken", null);
 
     // Clean another modules state if needed
     commit("calendars/setApiCalendars", [], { root: true });
   },
 
   async registration({ commit }, payload) {
+    await setPersistence(auth, browserLocalPersistence);
+
     const { email, password, passwordConfirmation } = payload;
     if (password !== passwordConfirmation) {
       throw new Error("Passwords do not match");
@@ -117,10 +114,8 @@ const actions = {
       email,
       password
     );
-    const token = await response.user.getIdToken();
 
     commit("setUser", response.user);
-    commit("setToken", token);
   },
 
   async requestPasswordReset({ commit }, email) {

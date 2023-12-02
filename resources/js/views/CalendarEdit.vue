@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { CALENDAR_SOURCES } from "../helpers/constants";
 import { mapActions, mapState } from "vuex";
 import { useDisplay } from "vuetify";
 import VueCal from "vue-cal";
@@ -182,9 +183,21 @@ export default {
     const { uuid } = this.$route.params;
     // Calendar is inside local calendars, use that one
 
-    await this.$store.dispatch("calendars/getCalendar", uuid);
+    // First, try to get local calendar
+    await this.$store.dispatch("calendars/getCalendar", {
+      uuid: uuid,
+      source: CALENDAR_SOURCES.LOCAL,
+    });
     if (this.calendar) {
-      // this.loaded = true;
+      return;
+    }
+
+    // If there is no local calendar, try to get it from the API
+    await this.$store.dispatch("calendars/getCalendar", {
+      uuid: uuid,
+      source: CALENDAR_SOURCES.API,
+    });
+    if (this.calendar) {
       return;
     }
 

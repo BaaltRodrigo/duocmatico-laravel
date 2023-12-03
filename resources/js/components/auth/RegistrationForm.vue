@@ -33,7 +33,7 @@
       label="Mostrar contraseñas"
     ></v-checkbox>
   </v-form>
-  <v-btn @click="submitForm" block color="orange-darken-1" variant="flat"
+  <v-btn @click="submitForm" block color="pink-darken-3" variant="flat"
     >Crear cuenta</v-btn
   >
 </template>

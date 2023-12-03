@@ -28,7 +28,7 @@
               class="text-caption mt-8"
               variant="tonal"
               type="info"
-              color="orange"
+              color="pink"
             >
               Te enviaremos las instrucciones a tu correo electrónico. Si no lo
               recibes en unos minutos, revisa tu carpeta de spam.

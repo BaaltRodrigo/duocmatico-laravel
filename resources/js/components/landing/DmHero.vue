@@ -17,10 +17,11 @@ const isMobile = inject("isMobile");
           tu proximo semestre
           <span class="text-amber"> mas facil </span>
         </h3>
-        <section class="my-6 d-flex align-center">
+        <section class="my-6 d-flex flex-wrap align-center">
           <v-btn
             size="x-large"
             color="white"
+            :block="isMobile"
             @click="router.push({ name: 'login' })"
             >Empieza ahora</v-btn
           >
@@ -28,6 +29,8 @@ const isMobile = inject("isMobile");
             class="mx-2"
             variant="text"
             color="white"
+            :block="isMobile"
+            :class="isMobile ? 'mt-2' : 'mx-2'"
             @click="router.push({ name: 'calendars.index' })"
           >
             Utilizar sin una cuenta

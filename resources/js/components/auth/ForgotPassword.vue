@@ -12,7 +12,7 @@
       rounded="xl"
       @click="submitForm"
       class="text-none mt-1"
-      color="orange-darken-1"
+      color="pink-darken-3"
     >
       Enviar instrucciones
     </v-btn>

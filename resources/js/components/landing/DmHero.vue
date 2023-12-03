@@ -21,6 +21,7 @@ const isMobile = inject("isMobile");
           <v-btn
             size="x-large"
             color="white"
+            :block="isMobile"
             @click="router.push({ name: 'login' })"
             >Empieza ahora</v-btn
           >
@@ -28,6 +29,7 @@ const isMobile = inject("isMobile");
             variant="text"
             color="white"
             :class="isMobile ? 'mt-2' : 'mx-2'"
+            :block="isMobile"
             @click="router.push({ name: 'calendars.index' })"
           >
             Utilizar sin una cuenta

@@ -149,6 +149,7 @@ export default {
       const calendar = {
         name: this.name,
         description: "",
+        sections: [], // by default calendars has no sections
         academic_charge: { ...charge },
         calendarable: {
           ...calendarable,

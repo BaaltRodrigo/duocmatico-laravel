@@ -1,0 +1,7 @@
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+
+/**
+  * vue-cal v4.8.1
+  * (c) 2022 Antoni Andre <antoniandre.web@gmail.com>
+  * @license MIT
+  */

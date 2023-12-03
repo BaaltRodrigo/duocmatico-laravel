@@ -44,7 +44,6 @@ export class ApiCalendarService {
   /**
    * Used to get the current user calendars from the API
    *
-   * @param {string} token The firebase token provided to the user
    * @returns Promise with the calendars or error from axios
    */
   async index() {

@@ -37,6 +37,16 @@
         </template>
       </v-list-item>
     </v-list>
+    <!-- Aca va el QR -->
+    <v-card-text class="text-center" v-if="isPublic">
+      <v-img
+        :src="qrCode"
+        width="200"
+        height="200"
+        class="mx-auto"
+        contain
+      ></v-img>
+    </v-card-text>
     <v-alert
       v-if="isPublic"
       density="compact"
@@ -77,6 +87,10 @@ export default {
 
     url() {
       return `${window.location.origin}/c/${this.calendar.uuid}`;
+    },
+
+    qrCode() {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${this.url}`;
     },
   },
 

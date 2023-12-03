@@ -74,14 +74,11 @@ const actions = {
     try {
       const serviceResponse = await service.create(calendar);
 
-      console.log(serviceResponse);
-
       const mutation =
         calendar.source === CALENDAR_SOURCES.API
           ? { name: "setApiCalendars", calendars: [...state.apiCalendars] }
           : { name: "setLocalCalendars", calendars: [...state.localCalendars] };
 
-      console.log(mutation);
       commit(mutation.name, [...mutation.calendars, serviceResponse]);
 
       return serviceResponse;

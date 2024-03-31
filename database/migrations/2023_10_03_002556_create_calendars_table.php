@@ -19,17 +19,11 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->json('options')->nullable();
 
-            $table->string('user_id')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->cascade('set null');
             $table->foreignId('academic_charge_id')->constrained()->cascade('set null');
             $table->morphs('calendarable'); // schools or careers
 
             $table->timestamps();
-
-            // Constraints
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->cascade('set null');
         });
     }
 

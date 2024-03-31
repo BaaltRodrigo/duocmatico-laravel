@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->string('id')->primary(); // Firebase UID (unique identifier) for the users
+            $table->id(); 
+            // Firebase provided data
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('firebase_uid')->unique();
             $table->timestamps();
         });
     }

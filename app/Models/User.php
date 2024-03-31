@@ -17,23 +17,16 @@ class User extends Authenticatable
     protected $guard_name = 'web';
 
     protected $fillable = [
-        'id', // comes from Firebase
+        'id', // Internal ID
+
+        // Following fields are provided by firebase        
+        'name',
+        'email',
+        'firebase_uid',
     ];
 
     public function calendars(): HasMany
     {
         return $this->hasMany(Calendar::class);
-    }
-
-    // Tells the database not to auto-increment this field
-    public function getIncrementing ()
-    {
-        return false;
-    }
-
-    // Helps the application specify the field type in the database
-    public function getKeyType ()
-    {
-        return 'string';
     }
 }

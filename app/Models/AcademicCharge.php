@@ -16,6 +16,7 @@ class AcademicCharge extends Model
         'year',
         'semester',
         'is_hidden',
+        'path', // Used to check were the excel file is stored.
     ];
 
     public function subjects(): BelongsToMany

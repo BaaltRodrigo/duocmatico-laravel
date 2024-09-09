@@ -35,9 +35,6 @@ class AcademicChargeController extends Controller
 
     public function show(AcademicCharge $charge): AcademicChargeResource
     {
-        // Load to avoid N+1 problem and improve performance
-        // By default, sections come with career and school
-        $charge->load('sections');
 
         return new AcademicChargeResource($charge);
     }
@@ -48,7 +45,15 @@ class AcademicChargeController extends Controller
 
         // TODO: Optimize this to avoid the creation of the same academic charge
         // TODO: Move this to an job or something to avoid frontend waiting for the response
-        $charge = HandleAcademicChargeFileLoad::execute($validated);
+
+        $path = $request->file('file')->store('charges'); // upload the file into R2
+
+        $charge = AcademicCharge::create([
+            'year' => $validated['year'],
+            'semester' => $validated['semester'],
+            'name' => $validated['name'],
+            'path' => $path,
+        ]);
 
         return new AcademicChargeIdentifier($charge);
     }
@@ -85,7 +90,7 @@ class AcademicChargeController extends Controller
         $validated = $request->validated();
 
         $sections = $charge->sections()
-            ->where($validated['resource_type'].'_id', $validated['resource_id'])
+            ->where($validated['resource_type'] . '_id', $validated['resource_id'])
             ->get();
 
         return SectionCollection::make($sections);

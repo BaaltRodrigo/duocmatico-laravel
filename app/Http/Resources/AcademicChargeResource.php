@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Collections\CareerCollection;
-use App\Http\Resources\Collections\SchoolCollection;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class AcademicChargeResource extends JsonResource
 {
@@ -22,20 +22,8 @@ class AcademicChargeResource extends JsonResource
             'year' => $this->year,
             'semester' => $this->semester,
             'is_hidden' => $this->is_hidden,
-            'season' => "{$this->year}-{$this->semester}",
-            // relationships when loaded
-            'careers' => CareerCollection::make(
-                $this->when(
-                    $this->relationLoaded('sections'),
-                    $this->sections->pluck('career')->unique() // Career is always eager loaded on subjects
-                )
-            ),
-            'schools' => SchoolCollection::make(
-                $this->when(
-                    $this->relationLoaded('sections'),
-                    $this->sections->pluck('school')->unique() // School is always eager loaded on subjects
-                )
-            ),
+            'url' => route('academic-charges.show', $this->id),
+            'file_path' => Storage::disk('r2')->url($this->path),
         ];
     }
 }

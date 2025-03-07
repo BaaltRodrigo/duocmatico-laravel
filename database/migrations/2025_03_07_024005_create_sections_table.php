@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string("code");
             $table->integer("shift");
+            $table->integer("year");
+            $table->integer("season"); // 1 - First semester, 2 - Second semester, 3 Summer season, 4 - Winter season
 
             $table->foreignId("course_id")->constrained();
 

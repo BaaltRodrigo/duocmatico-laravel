@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Section extends Model
 {
 
-    public $fillable = ['code', 'shift', 'course_id'];
+    public $fillable = ['code', 'shift', 'year', 'season', 'course_id'];
 
     public function course(): BelongsTo
     {

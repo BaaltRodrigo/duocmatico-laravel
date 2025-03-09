@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
             $table->string("code");
-            $table->integer("shift");
+            $table->string("shift");
             $table->integer("year");
             $table->integer("season"); // 1 - First semester, 2 - Second semester, 3 Summer season, 4 - Winter season
 

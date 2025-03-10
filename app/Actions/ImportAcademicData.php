@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Models\Campus;
 use App\Models\Career;
 use App\Models\Course;
+use App\Models\Schedule;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Str;
 
@@ -73,5 +74,28 @@ class ImportAcademicData
             'year' => $year,
             'season' => $season,
         ]);
+
+        // get the variables needed for the schedule model
+        $scheduleRegex = "/([A-Za-z]{2})\s(\d{2}:\d{2}:\d{2})\s-\s(\d{2}:\d{2}:\d{2})/";
+        // Adjusted regex pattern to match day and time range
+        if (preg_match($scheduleRegex, trim($schedule), $matches)) {
+            $dayNumber = [
+                'Lu' => 1,
+                'Ma' => 2,
+                'Mi' => 3,
+                'Ju' => 4,
+                'Vi' => 5,
+                'Sa' => 6,
+                'Do' => 0,
+            ];
+            $schedule = Schedule::firstOrCreate([
+                'day' => $dayNumber[$matches[1]], // Extracted day
+                'start'  => $matches[2], // Extracted start time
+                'end'    => $matches[3], // Extracted end time
+            ]);
+
+            // Attach the schedule to the section
+            $section->schedules()->syncWithoutDetaching([$schedule->id]);
+        }
     }
 }

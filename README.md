@@ -1,66 +1,51 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Duocmatico
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> [!IMPORTANT]
+> We know we are using the word Duoc. But this project is not _fully_ related to Duoc UC. We were students and this is our project for the title.
 
-## About Laravel
+This is the backend for a tool called Duocmatico. A web app to help Duoc UC students to prepare their academic season in a better way. Getting rid of the excel... Oh how we hate that excel file with the sections.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+We use that excel actually to fill all the necessary data so the students (and teachers) can built their calendars.  
+Just tell us your career and campus, we show you the sections available to you ;)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Some of the conventions we are using on Duocmatico.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+To give some structure and prevent the classic of "Th1S w4y Is BetT3r", some conventions are needed.
 
-## Learning Laravel
+1. The first day of the week is Sunday. That means, if we enumerate the days of the week from 0 to 6. Sunday is 0.
+2. We never delete a calendar.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Response content to the clients
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+There is a convention used on the resources Duocmatico sent to the clients. This resources are JSON resources and we follow the [JsonApi standards](https://jsonapi.org/) or at least try to follow it the best we can.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+That means that you will see 2 types of resources. Model resources and Identifier resources. 
 
-## Laravel Sponsors
+#### Model Resource
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+This is the full data of a resource. This include its relationship to other resources, metadata and basically the full information of the resource.
 
-### Premium Partners
+#### Identifier Resources
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+This type of resource is meant to be included on the _relationships_ of other models.
 
-## Contributing
+This is useful to reduce the data we sent to the client and optimize the http request.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+This will help also to reduce the DB workload. But no, we do not pick only the data we need to fulfill the request from the database. This is not our priority for the time now... 
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## My data, what do you do with my data? Are you selling it?
 
-## Security Vulnerabilities
+First thing first. No. We do not sell or share any of your data. But we need to difference what is **your** data and **Duocmatico's data**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### What data is yours
 
-## License
+Actually, we need so little of "your" data. Only an **email** to do a few things.
+1. Identify you inside the app.
+2. Get your data synced between devices.
+3. Measure the use of Duocmatico.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Who can use this API? 
+
+At this moment, only the frontend of Duocmatico is meant to be using this API. But we do not close the possibility on open some of the endpoints to be used by students or every one who wants to try it.
+

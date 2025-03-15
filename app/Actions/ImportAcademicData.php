@@ -96,6 +96,10 @@ class ImportAcademicData
 
             // Attach the schedule to the section
             $section->schedules()->syncWithoutDetaching([$schedule->id]);
+
+            // Attach the campus and career to the section
+            $section->campuses()->syncWithoutDetaching([$campus->id]);
+            $section->careers()->syncWithoutDetaching([$career->id]);
         }
     }
 }

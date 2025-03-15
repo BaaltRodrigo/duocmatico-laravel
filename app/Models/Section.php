@@ -20,4 +20,14 @@ class Section extends Model
     {
         return $this->belongsToMany(Schedule::class, 'section_schedule');
     }
+
+    public function campuses(): BelongsToMany
+    {
+        return $this->belongsToMany(Campus::class, 'section_campus', 'section_id', 'campus_id');
+    }
+
+    public function careers(): BelongsToMany
+    {
+        return $this->belongsToMany(Career::class, 'section_career', 'section_id', 'career_id');
+    }
 }

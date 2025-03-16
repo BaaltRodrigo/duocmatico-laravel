@@ -22,6 +22,7 @@ class SectionResource extends JsonResource
             'season' => $this->season,
             'schedules' => ScheduleResource::collection($this->schedules),
             'careers' => CareerIdentifierResource::collection($this->careers),
+            'campuses' => CampusIdentifierResource::collection($this->campuses),
         ];
     }
 }

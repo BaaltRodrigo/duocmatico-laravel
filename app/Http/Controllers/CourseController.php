@@ -18,9 +18,18 @@ class CourseController extends Controller
 
         $year = $request->input('year');
         $season = $request->input('season');
+        $career = $request->input('career');
 
-        $courses = Course::with(['sections.schedules'])->whereHas('sections', function ($query) use ($year, $season) {
+        // There is a third optional param of "career" tho filter if a section belongs to a specific career
+        // Example: /api/courses?year=2021&season=1&career=1
+
+        $courses = Course::with(['sections.schedules'])->whereHas('sections', function ($query) use ($year, $season, $career) {
             $query->where('year', $year)->where('season', $season);
+            if ($career) {
+                $query->whereHas('careers', function($q) use ($career) {
+                    $q->where('careers.id', $career);
+                });
+            }
         })->get();
 
         $resources = new CourseCollection($courses);

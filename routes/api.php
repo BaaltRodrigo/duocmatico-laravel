@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\UploadAcademicChargeController;
 use App\Http\Controllers\CampusController;
+use App\Http\Controllers\CourseController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -16,4 +17,5 @@ Route::prefix('/v1')->group(function () {
 
     Route::apiResource('careers', CareerController::class)->only(['index']);
     Route::apiResource('campuses', CampusController::class)->only(['index']);
+    Route::apiResource('courses', CourseController::class)->only(['index']);
 });

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Section extends Model
 {
 
-    public $fillable = ['code', 'shift', 'year', 'season', 'course_id'];
+    public $fillable = ['code', 'shift', 'year', 'season', 'level', 'course_id'];
 
     protected $with = ['schedules']; // eager loading of schedules
 

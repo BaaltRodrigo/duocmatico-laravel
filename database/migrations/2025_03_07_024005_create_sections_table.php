@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string("shift");
             $table->integer("year");
             $table->integer("season"); // 1 - First semester, 2 - Second semester, 3 Summer season, 4 - Winter season
+            // There are levels like "Optativos" or "Programa de Capacidades y Competencias Globales"
+            // so we use this field to store that information
+            // We may move this field to a separate table
+            $table->string("level"); 
 
             $table->foreignId("course_id")->constrained();
 

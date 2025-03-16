@@ -63,7 +63,6 @@ class ImportAcademicData
         $course = Course::firstOrCreate([
             'code' => $course_code,
             'name' => $course_name,
-            'level' => $level,
         ]);
 
         // Create the section
@@ -73,6 +72,7 @@ class ImportAcademicData
             'shift' => $slugShift,
             'year' => $year,
             'season' => $season,
+            'level' => $level,
         ]);
 
         // get the variables needed for the schedule model

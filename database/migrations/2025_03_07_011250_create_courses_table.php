@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string("code");
             $table->string("name");
-            $table->string("level"); // there are levels like "Optatives", "Global capacities", etc.
 
             $table->timestamps();
             $table->softDeletes();
